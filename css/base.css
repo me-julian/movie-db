@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background-color:slategray;
+    height: 3em;
+}
+
+nav > a {
+    color:black;
+    text-decoration: none;
+    font-size: 2em;
+}
+
+#upcoming {
+    height: 350px;
+}
+#movies {
+    background-color:teal;
+}
+#actors {
+    background-color:cadetblue;
+}
+

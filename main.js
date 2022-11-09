@@ -58,18 +58,34 @@ function populatePageData(API) {
     })
 }
 function populateUpcoming(movies) {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 10; i++) {
         let movie = movies.results[i]
-        let carouselItem = $(
-            `#movies-carousel .carousel-item:nth-child(${i + 1})`
+        let carouselItemImg = $(
+            `#movies-carousel .carousel-item:nth-child(${i + 1}) img`
         )
-        let carouselItemImg = $(carouselItem).children('img')
 
         carouselItemImg.attr(
             'src',
             `https://image.tmdb.org/t/p/w500${movie.poster_path}`
         )
     }
+
+    // Source: https://stackoverflow.com/questions/20007610/bootstrap-carousel-multiple-frames-at-once
+    let items = $('#movies-carousel .carousel-item')
+    items.each((i, el) => {
+        // number of slides per carousel-item
+        const minPerSlide = 3
+        let next = el.nextElementSibling
+        for (let i = 1; i < minPerSlide; i++) {
+            if (!next) {
+                // wrap carousel by using first child
+                next = items[0]
+            }
+            let cloneChild = next.cloneNode(true)
+            el.appendChild(cloneChild.children[0])
+            next = next.nextElementSibling
+        }
+    })
 }
 
 function populateActors(API, movies) {
@@ -151,14 +167,29 @@ function duplicateActor(actors, actor) {
 
 function buildActorCarouselItems(actors) {
     console.log(actors)
-    for (let actor in actors) {
-        // let carouselItem = $(
-        //     `#movies-carousel .carousel-item:nth-child(${i + 1})`
-        // )
-        // let carouselItemImg = $(carouselItem).children('img')
-        // carouselItemImg.attr(
-        //     'src',
-        //     `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-        // )
+    let actorItems = []
+    for (let movie in actors) {
+        for (let actor of actors[movie]) {
+            actorItems.push(createActorCarouselItem(actor, movie))
+        }
     }
+
+    console.log(actorItems)
+    $(actorItems[0]).addClass('active')
+    for (let item of actorItems) {
+        $('#actors-carousel').children('.carousel-inner').append(item)
+    }
+}
+function createActorCarouselItem(actor, movieId) {
+    let item = $('<div></div>').addClass('carousel-item')
+    $(item).attr('data-movie-id', movieId)
+    let img = $('<img></img>').addClass('d-block mx-auto img-fluid')
+    $(img).attr(
+        'src',
+        `https://image.tmdb.org/t/p/original${actor.profile_path}`
+    )
+
+    $(item).append(img)
+
+    return item
 }

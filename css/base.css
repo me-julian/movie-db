@@ -59,3 +59,11 @@ nav > a {
 #movies-carousel .carousel-item-start {
     transform: translateX(0);
 }
+
+/* #top-ten .card-img-overlay {
+    padding: 0;
+} */
+
+.dark-bg-transp {
+    background-color: rgba(0, 0, 0, 0.652);
+}

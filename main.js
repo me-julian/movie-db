@@ -48,6 +48,21 @@ function retrieveUpcomingMovies(API) {
 
     return request.promise()
 }
+function retrieveTopRatedMovies(API) {
+    const request = $.Deferred()
+
+    $.get({
+        url: `https://api.themoviedb.org/3/movie/top_rated?api_key=${API.key}&language=en-US&page=1`,
+        success: (data) => {
+            request.resolve(data)
+        },
+    }).fail(() => {
+        console.error('Failed to retrieve top rated movie info.')
+        request.reject()
+    })
+
+    return request.promise()
+}
 
 function populatePageData(API) {
     console.log('Building page.')
@@ -55,6 +70,11 @@ function populatePageData(API) {
     upcomingRequest.done((data) => {
         populateUpcoming(data)
         populateActors(API, data)
+    })
+    const topRatedRequest = retrieveTopRatedMovies(API)
+    topRatedRequest.done((data) => {
+        console.log(data)
+        populateTopRated(API, data)
     })
 }
 function populateUpcoming(movies) {
@@ -166,7 +186,6 @@ function duplicateActor(actors, actor) {
 }
 
 function buildActorCarouselItems(actors) {
-    console.log(actors)
     let actorItems = []
     for (let movie in actors) {
         for (let actor of actors[movie]) {
@@ -174,7 +193,6 @@ function buildActorCarouselItems(actors) {
         }
     }
 
-    console.log(actorItems)
     $(actorItems[0]).addClass('active')
     for (let item of actorItems) {
         $('#actors-carousel').children('.carousel-inner').append(item)
@@ -192,4 +210,68 @@ function createActorCarouselItem(actor, movieId) {
     $(item).append(img)
 
     return item
+}
+
+function populateTopRated(API, movies) {
+    $('#top-ten .card').each((i, el) => {
+        const movieImagesRequest = retrieveMovieImages(API, movies.results[i])
+        let imageString = ''
+        movieImagesRequest.done((images) => {
+            let poster = getLangAppropriatePoster(
+                movies.results[i],
+                images.posters
+            )
+            imageString = poster.file_path
+            $(el)
+                .children('img')
+                .attr(
+                    'src',
+                    `https://image.tmdb.org/t/p/original${imageString}`
+                )
+        })
+    })
+}
+
+function retrieveMovieImages(API, movie) {
+    const request = $.Deferred()
+
+    $.get({
+        url: `https://api.themoviedb.org/3/movie/${movie.id}/images?api_key=${API.key}`,
+        success: (data) => {
+            request.resolve(data)
+        },
+    }).fail(() => {
+        console.error('Failed to retrieve movie cast.')
+        request.reject()
+    })
+
+    return request.promise()
+}
+function getLangAppropriatePoster(movie, posters) {
+    let poster = posters.find((el) => {
+        return el.iso_639_1 == 'en'
+    })
+    if (poster === undefined) {
+        poster = posters.find((el) => {
+            return el.iso_639_1 == movie.original_language
+        })
+        if (poster === undefined) {
+            poster = posters[0]
+        }
+    }
+    return poster
+}
+function getLangAppropriateLogo(movie, logos) {
+    let logo = logos.find((el) => {
+        return el.iso_639_1 == 'en'
+    })
+    if (logo === undefined) {
+        logo = logos.find((el) => {
+            return el.iso_639_1 == movie.original_language
+        })
+        if (logo === undefined) {
+            logo = logos[0]
+        }
+    }
+    return logo
 }

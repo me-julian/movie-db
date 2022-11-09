@@ -85,7 +85,7 @@ function retrieveUpcomingMovieActors(API, movies) {
         let castRequest = retrieveCast(API, movies.results[i].id)
         castRequest
             .done((data) => {
-                mergePopularCast(actors, data)
+                actors = mergePopularCast(actors, data)
             })
             .then(() => {
                 if (i === 9) {
@@ -112,18 +112,41 @@ function retrieveCast(API, movieId) {
     return request.promise()
 }
 function mergePopularCast(actors, movieCredits) {
-    let newActors = movieCredits.cast.sort(compareActorPopularity)
-    actors[movieCredits.id] = [newActors[0], newActors[1], newActors[2]]
-    // removeDuplicateCast(actors, data)
+    const newActors = movieCredits.cast.sort(compareActorPopularity)
+    actors[movieCredits.id] = newActors.slice(0, 10)
+    actors = removeDuplicateCast(actors)
+
+    return actors
 }
 function compareActorPopularity(a, b) {
     return b.popularity - a.popularity
 }
-function removeDuplicateCast(actors, newActors) {
-    // Remove both newActors already in actors
-    // and popular actors playing multiple characters in newActors.
-    // Probably need to do this earlier.
-    return actors
+function removeDuplicateCast(actors) {
+    let selectedActors = {}
+    for (let movie in actors) {
+        selectedActors[movie] = []
+        for (let actor of actors[movie]) {
+            if (selectedActors[movie].length >= 3) {
+                break
+            } else {
+                if (!duplicateActor(selectedActors, actor)) {
+                    selectedActors[movie].push(actor)
+                }
+            }
+        }
+    }
+
+    return selectedActors
+}
+function duplicateActor(actors, actor) {
+    for (let movie in actors) {
+        if (actors[movie].every((a) => a.id !== actor.id)) {
+            continue
+        } else {
+            return true
+        }
+    }
+    return false
 }
 
 function buildActorCarouselItems(actors) {

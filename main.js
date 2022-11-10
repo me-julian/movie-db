@@ -7,13 +7,16 @@ function init() {
     const APIRequest = retrieveAPIKeys()
     APIRequest.done((data) => {
         setAPIKeys(API, data)
+    }).done(() => {
+        const pageDataLoaded = populatePageData(API)
+        pageDataLoaded
+            .done(() => {
+                initEventListeners(API)
+            })
+            .fail(() => {
+                alert('Unable to load page data.')
+            })
     })
-        .then(() => {
-            populatePageData(API)
-        })
-        .fail(() => {
-            alert('Unable to load movie data.')
-        })
 }
 
 function retrieveAPIKeys() {
@@ -65,31 +68,63 @@ function retrieveTopRatedMovies(API) {
 }
 
 function populatePageData(API) {
-    console.log('Building page.')
+    const populated = $.Deferred()
+    const upcomingPopulated = $.Deferred()
+    const topRatedPopulated = $.Deferred()
+
     const upcomingRequest = retrieveUpcomingMovies(API)
     upcomingRequest.done((data) => {
-        populateUpcoming(data)
-        populateActors(API, data)
+        const upcoming = populateUpcoming(API, data)
+        upcoming.done(() => {
+            upcomingPopulated.resolve()
+        })
     })
     const topRatedRequest = retrieveTopRatedMovies(API)
     topRatedRequest.done((data) => {
-        console.log(data)
-        populateTopRated(API, data)
+        const topRated = populateTopRated(API, data)
+        topRated.done(() => {
+            topRatedPopulated.resolve()
+        })
     })
+
+    $.when(upcomingPopulated, topRatedPopulated).done(() => {
+        populated.resolve()
+    })
+
+    return populated.promise()
 }
-function populateUpcoming(movies) {
+
+function populateUpcoming(API, movies) {
+    const complete = $.Deferred()
+
+    const upcomingMovies = populateUpcomingMovies(movies)
+    const upcomingActors = populateUpcomingActors(API, movies)
+    $.when(upcomingMovies, upcomingActors).done(() => {
+        complete.resolve()
+    })
+
+    return complete.promise()
+}
+function populateUpcomingMovies(movies) {
+    const completed = $.Deferred()
+
     for (let i = 0; i < 10; i++) {
         let movie = movies.results[i]
-        let carouselItemImg = $(
-            `#movies-carousel .carousel-item:nth-child(${i + 1}) img`
+        let carouselItem = $(
+            `#movies-carousel .carousel-item:nth-child(${i + 1})`
         )
+        $(carouselItem).children().attr('data-id', movie.id)
+        let img = $(carouselItem).find('img')
 
-        carouselItemImg.attr(
-            'src',
-            `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-        )
+        img.attr('src', `https://image.tmdb.org/t/p/w500${movie.poster_path}`)
     }
 
+    createMultiSlideStructure()
+
+    completed.resolve()
+    return completed.promise()
+}
+function createMultiSlideStructure() {
     // Source: https://stackoverflow.com/questions/20007610/bootstrap-carousel-multiple-frames-at-once
     let items = $('#movies-carousel .carousel-item')
     items.each((i, el) => {
@@ -108,11 +143,16 @@ function populateUpcoming(movies) {
     })
 }
 
-function populateActors(API, movies) {
+function populateUpcomingActors(API, movies) {
+    const completed = $.Deferred()
+
     const actorsRetrieved = retrieveUpcomingMovieActors(API, movies)
     actorsRetrieved.then((data) => {
         buildActorCarouselItems(data)
+        completed.resolve()
     })
+
+    return completed.promise()
 }
 function retrieveUpcomingMovieActors(API, movies) {
     const request = $.Deferred()
@@ -201,6 +241,7 @@ function buildActorCarouselItems(actors) {
 function createActorCarouselItem(actor, movieId) {
     let item = $('<div></div>').addClass('carousel-item')
     $(item).attr('data-movie-id', movieId)
+    $(item).attr('data-actor-id', actor.id)
     let img = $('<img></img>').addClass('d-block mx-auto img-fluid')
     $(img).attr(
         'src',
@@ -213,6 +254,8 @@ function createActorCarouselItem(actor, movieId) {
 }
 
 function populateTopRated(API, movies) {
+    const completed = $.Deferred()
+
     $('#top-ten .card').each((i, el) => {
         const movieImagesRequest = retrieveMovieImages(API, movies.results[i])
         let imageString = ''
@@ -230,6 +273,9 @@ function populateTopRated(API, movies) {
                 )
         })
     })
+
+    completed.resolve()
+    return completed.promise()
 }
 
 function retrieveMovieImages(API, movie) {
@@ -274,4 +320,186 @@ function getLangAppropriateLogo(movie, logos) {
         }
     }
     return logo
+}
+
+function initEventListeners(API) {
+    attachMovieListeners(API)
+}
+function attachMovieListeners(API) {
+    let upcomingMovies = $(`#movies-carousel .carousel-item > div`)
+
+    const viewMovieListener = function (event) {
+        viewMovieDetails(event.currentTarget, API)
+    }
+    $(upcomingMovies).each((i, el) => {
+        el.addEventListener('click', viewMovieListener)
+    })
+}
+
+function viewMovieDetails(target, API) {
+    let collapseEl = document.querySelector('#info-collapse')
+    if ($(collapseEl).hasClass('show')) {
+        $(collapseEl).collapse('hide')
+    }
+
+    let movieId = $(target).attr('data-id')
+    const movieDetailsRequest = retrieveMovieDetails(API, movieId)
+    movieDetailsRequest.done((data) => {
+        const detailsLoaded = populateMovieDetails(data)
+        detailsLoaded.done(() => {
+            // Need event listener/timeout to only do this after
+            // it's disappeared.
+            $(collapseEl).collapse('show')
+        })
+    })
+}
+
+function retrieveMovieDetails(API, movieId) {
+    const request = $.Deferred()
+
+    $.get({
+        url: `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API.key}&language=en-US&append_to_response=credits,reviews`,
+        success: (data) => {
+            console.log(data)
+            request.resolve(data)
+        },
+    }).fail(() => {
+        console.error('Failed to retrieve movie details.')
+        request.reject()
+    })
+
+    return request.promise()
+}
+function populateMovieDetails(movie) {
+    const completed = $.Deferred()
+
+    $('#title').text(movie.title)
+    if (
+        movie.original_language !== 'en' &&
+        movie.title.toLowerCase() !== movie.original_title.toLowerCase()
+    ) {
+        $('#original-title').text(movie.original_title)
+    } else {
+        $('#original-title').text('')
+    }
+    $('#rating').text(movie.vote_average.toFixed(2))
+
+    $('#poster').attr(
+        'src',
+        `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+    )
+
+    $('#release-date').text(movie.release_date.slice(0, 4))
+    $('#overview').text(movie.overview)
+
+    populateMovieDetailsMisc(movie)
+
+    populateMovieDetailsReviews(movie)
+
+    completed.resolve()
+    return completed.promise()
+}
+function populateMovieDetailsMisc(movie) {
+    if (movie.genres.length > 0) {
+        $('#genres').removeClass('hidden')
+        let genreString = movie.genres[0].name
+        for (let i = 1; i < movie.genres.length; i++) {
+            genreString = genreString.concat(', ', movie.genres[i].name)
+        }
+        $('#genres').text(`Genres: ${genreString}`)
+    } else {
+        hideInfo($('#genres'))
+    }
+    if (movie.runtime !== 0) {
+        $('#runtime').removeClass('hidden')
+        $('#runtime').text(`Runtime: ${movie.runtime} minutes`)
+    } else {
+        hideInfo($('#runtime'))
+    }
+    if (movie.production_countries.length > 0) {
+        $('#production-countries').removeClass('hidden')
+        let countriesString = movie.production_countries[0].name
+        for (let i = 1; i < movie.production_countries.length; i++) {
+            countriesString = countriesString.concat(
+                ', ',
+                movie.production_countries[i].name
+            )
+        }
+        $('#production-countries').text(`Produced in: ${countriesString}`)
+    } else {
+        hideInfo($('#production-countries'))
+    }
+    if (movie.spoken_languages.length > 0) {
+        $('#spoken-languages').removeClass('hidden')
+        let languagesString = movie.spoken_languages[0].english_name
+        for (let i = 1; i < movie.spoken_languages.length; i++) {
+            languagesString = languagesString.concat(
+                ', ',
+                movie.spoken_languages[i].english_name
+            )
+        }
+        $('#spoken-languages').text(`Languages: ${languagesString}`)
+    } else {
+        hideInfo($('#spoken-languages'))
+    }
+    if (movie.budget !== 0) {
+        $('#budget').removeClass('hidden')
+        $('#budget').text(`Budget: $${movie.budget.toLocaleString()}`)
+    } else {
+        hideInfo($('#budget'))
+    }
+    if (movie.revenue !== 0) {
+        $('#revenue').removeClass('hidden')
+        $('#revenue').text(`Revenue: $${movie.revenue.toLocaleString()}`)
+    } else {
+        hideInfo($('#revenue'))
+    }
+}
+
+function populateMovieDetailsReviews(movie) {
+    if (movie.reviews.results.length < 1) {
+        $('#reviews .page-link').addClass('disabled')
+    } else {
+        let review = createReviewElement(movie.reviews.results[0])
+        $('#current-review').append(review)
+    }
+}
+
+function createReviewElement(review) {
+    let card = $(document.createElement('div')).addClass('card')
+    $(card).attr('data-review-id', review.id)
+    $(card).attr('data-author-username', review.author_details.username)
+
+    let cardBody = $(document.createElement('div')).addClass('card-body')
+
+    let body = $(document.createElement('p'))
+        .addClass('card-text')
+        .text(review.content)
+
+    let avatarPath
+    if (review.author_details.avatar_path.includes('gravatar')) {
+        avatarPath = review.author_details.avatar_path
+        if (avatarPath.startsWith('/')) {
+            avatarPath = avatarPath.slice(1, avatarPath.length)
+        }
+    } else {
+        avatarPath = `https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`
+    }
+    let avatar = $(document.createElement('img')).attr('src', avatarPath)
+
+    let author = $(document.createElement('h5'))
+        .addClass('card-title')
+        .text(`${review.author_details.rating} by ${review.author}`)
+
+    let creationDate = new Date(review.created_at)
+    let date = $(document.createElement('h6'))
+        .addClass('card-subtitle')
+        .text(creationDate.toLocaleString())
+
+    card.append(cardBody.append(body, avatar, author, date))
+    return card
+}
+function hideInfo(element) {
+    $(element).text = ''
+    $(element).addClass('hidden')
 }

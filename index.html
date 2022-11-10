@@ -22,113 +22,170 @@
     <link rel="stylesheet" href="./css/base.css" />
   </head>
   <body>
-    <nav>
+    <nav id="nav-bar">
       <a href="./index.html">My Movie DB</a>
     </nav>
-    <main class="container-fluid">
+    <main class="container-fluid px-0">
+      <section
+        class="position-absolute container-fluid collapse"
+        id="info-collapse"
+      >
+        <div id="details-wrapper" class="container">
+          <div class="d-flex">
+            <div>
+              <h2 id="title"></h2>
+              <h4 id="original-title"></h4>
+            </div>
+            <h3 id="rating"></h3>
+            <button
+              type="button"
+              class="btn-close ms-auto"
+              aria-label="Close"
+              data-bs-toggle="collapse"
+              data-bs-target="#info-collapse"
+            ></button>
+          </div>
+          <div class="d-flex">
+            <img id="poster" class="rounded" src="" />
+            <div class="p-4">
+              <h5 id="release-date"></h5>
+              <p id="overview" class=""></p>
+            </div>
+          </div>
+          <div id="misc" class="col-4">
+            <ul class="list-group list-group-flush">
+              <li id="genres" class="list-group-item"></li>
+              <li id="runtime" class="list-group-item"></li>
+              <li id="production-countries" class="list-group-item"></li>
+              <li id="spoken-languages" class="list-group-item"></li>
+              <li id="budget" class="list-group-item"></li>
+              <li id="revenue" class="list-group-item"></li>
+            </ul>
+          </div>
+          <div id="cast"></div>
+          <div id="reviews" class="p-2 m-2 border-bottom border-top">
+            <h5>Reviews</h5>
+            <div id="current-review"></div>
+            <nav aria-label="Review navigation">
+              <ul class="pagination pagination-sm">
+                <li class="page-item">
+                  <a class="page-link">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link">1</a></li>
+                <li class="page-item">
+                  <a class="page-link">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </section>
       <section
         id="upcoming"
         class="container row justify-content-center mx-auto my-auto"
       >
         <div
           id="movies-carousel"
-          class="col-9 carousel slide"
+          class="pe-none carousel slide col-9"
           data-bs-ride="carousel"
         >
+          <!-- <div class="position-absolute spinner-border text-dark" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div> -->
           <div class="carousel-inner d-flex align-items-center h-100">
             <div class="carousel-item active">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
             <div class="carousel-item">
-              <div class="col-md-3">
+              <div class="pe-auto col-md-3">
                 <div class="card">
                   <div class="card-img">
-                    <img src="" class="img-fluid" />
+                    <img src="" class="img-fluid rounded" />
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <button
-            class="carousel-control-prev"
+            class="pe-auto carousel-control-prev"
             type="button"
             data-bs-target="#movies-carousel"
             data-bs-slide="prev"
@@ -136,7 +193,7 @@
             <span class="visually-hidden">Previous Upcoming Movie</span>
           </button>
           <button
-            class="carousel-control-next"
+            class="pe-auto carousel-control-next"
             type="button"
             data-bs-target="#movies-carousel"
             data-bs-slide="next"

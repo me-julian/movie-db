@@ -82,6 +82,13 @@ body {
     align-items: center;
 }
 
+#reviews .page-item {
+    cursor: pointer;
+}
+#reviews .page-item.disabled {
+    cursor: auto;
+}
+
 .hidden {
     display: none;
 }

@@ -66,14 +66,15 @@
           <div id="reviews" class="p-2 m-2 border-bottom border-top">
             <h5>Reviews</h5>
             <div id="current-review"></div>
-            <div id="no-reviews" class="hidden"></div>
-            <nav aria-label="Review navigation">
+            <div id="no-reviews" class="hidden">
+              <p>There are no reviews for this movie.</p>
+            </div>
+            <nav aria-label="review navigation">
               <ul class="pagination pagination-sm">
-                <li class="page-item">
+                <li id="review-prev" class="page-item control">
                   <a class="page-link">Previous</a>
                 </li>
-                <li class="page-item"><a class="page-link">1</a></li>
-                <li class="page-item">
+                <li id="review-next" class="page-item control">
                   <a class="page-link">Next</a>
                 </li>
               </ul>
@@ -83,13 +84,14 @@
       </section>
       <section
         id="upcoming"
-        class="container row justify-content-center mx-auto my-auto"
+        class="container row justify-content-center mx-auto my-auto text-center"
       >
         <div
           id="movies-carousel"
           class="pe-none carousel slide col-9"
           data-bs-ride="carousel"
         >
+          <h2>Upcoming Movies</h2>
           <!-- <div class="position-absolute spinner-border text-dark" role="status">
             <span class="visually-hidden">Loading...</span>
           </div> -->
@@ -207,6 +209,7 @@
           class="col-3 carousel slide"
           data-bs-ride="carousel"
         >
+          <h4>Featuring Actors</h4>
           <div class="carousel-inner"></div>
           <button
             class="carousel-control-prev"

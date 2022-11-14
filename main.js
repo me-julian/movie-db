@@ -458,13 +458,10 @@ function populateMovieDetailsMisc(movie) {
 
 function populateMovieDetailsReviews(movie) {
     if (movie.reviews.results.length === 0) {
-        $('#no-reviews').toggleClass(
-            'hidden',
-            movie.reviews.results.length === 0
-        )
+        $('#no-reviews').toggleClass('hidden', false)
         $('#current-review').children().remove()
-        return
     } else {
+        $('#no-reviews').toggleClass('hidden', true)
         if ($('#current-review').children().length > 0) {
             updateReviewElement(movie.reviews.results[0])
         } else {
@@ -473,7 +470,7 @@ function populateMovieDetailsReviews(movie) {
         }
     }
 
-    //         $('#reviews .page-link').addClass('disabled')
+    setReviewPagination(movie.reviews)
 }
 
 function createReviewElement(review) {
@@ -557,6 +554,91 @@ function getAuthorAndRatingString(review) {
         return `${review.author}`
     }
 }
+
+function setReviewPagination(reviews) {
+    $('#reviews nav').on('click', '.control', function (event) {
+        incrementReview(event.currentTarget)
+    })
+
+    if (reviews.results.length > 0) {
+        $('#reviews nav').removeClass('disabled')
+        disablePageControl($('#review-prev'))
+        for (let i = 0; i < reviews.results.length; i++) {
+            createPageLink(reviews, i, reviews.results[i])
+        }
+        addReviewPageEventListeners()
+        // Select default first review
+        $('#reviews nav .page-item:nth-child(2)').addClass('active').off()
+
+        if (reviews.results.length > 1) {
+            enablePageControl($('#review-next'))
+        } else {
+            disablePageControl($('#review-next'))
+        }
+    } else {
+        $('#reviews nav').addClass('hidden')
+    }
+}
+function enablePageControl(link) {
+    $(link).toggleClass('disabled', false)
+}
+function disablePageControl(link) {
+    $(link).toggleClass('disabled', true)
+}
+function incrementReview(btn) {
+    if ($(btn).hasClass('disabled')) {
+        return
+    } else {
+        let newReview
+        if (btn.id === 'review-prev') {
+            newReview = $('#reviews nav .active').prev('.specific')
+        } else if (btn.id === 'review-next') {
+            newReview = $('#reviews nav .active').next('.specific')
+        } else {
+            console.error('Unexpected event target incrementing viewed review.')
+        }
+        if (newReview[0]) {
+            changeReviewPage(newReview)
+        } else {
+            console.log('end of shown items')
+            // Get new review page
+        }
+
+        if (newReview[0] === $('#reviews nav .specific')[0]) {
+            disablePageControl($('#review-prev'))
+        } else {
+            enablePageControl($('#review-prev'))
+        }
+    }
+}
+function createPageLink(reviews, reviewIndex, review) {
+    let li = $(document.createElement('li')).addClass('page-item specific')
+    li.append(
+        $(document.createElement('a'))
+            .addClass('page-link')
+            .text(reviewIndex + 1)
+    )
+
+    let btns = $('#reviews nav .page-item')
+    li.insertAfter($(btns)[btns.length - 2])
+}
+
+function addReviewPageEventListeners() {
+    $('#reviews nav .specific').on('click', (event) => {
+        changeReviewPage(event.currentTarget)
+    })
+}
+function changeReviewPage(li) {
+    let prevButton = $('#reviews nav .active').first()
+    prevButton.removeClass('active')
+    prevButton.on('click', (event) => {
+        changeReviewPage($(event.currentTarget))
+    })
+
+    $(li).addClass('active')
+    $(li).off()
+}
+
 function hideInfo(element) {
     $(element).text = ''
     $(element).addClass('hidden')

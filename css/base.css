@@ -77,6 +77,11 @@ body {
     list-style-type: none;
 }
 
+.review-info {
+    display: flex;
+    align-items: center;
+}
+
 .hidden {
     display: none;
 }

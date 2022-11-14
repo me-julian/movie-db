@@ -457,12 +457,23 @@ function populateMovieDetailsMisc(movie) {
 }
 
 function populateMovieDetailsReviews(movie) {
-    if (movie.reviews.results.length < 1) {
-        $('#reviews .page-link').addClass('disabled')
+    if (movie.reviews.results.length === 0) {
+        $('#no-reviews').toggleClass(
+            'hidden',
+            movie.reviews.results.length === 0
+        )
+        $('#current-review').children().remove()
+        return
     } else {
-        let review = createReviewElement(movie.reviews.results[0])
-        $('#current-review').append(review)
+        if ($('#current-review').children().length > 0) {
+            updateReviewElement(movie.reviews.results[0])
+        } else {
+            let review = createReviewElement(movie.reviews.results[0])
+            $('#current-review').append(review)
+        }
     }
+
+    //         $('#reviews .page-link').addClass('disabled')
 }
 
 function createReviewElement(review) {
@@ -476,6 +487,58 @@ function createReviewElement(review) {
         .addClass('card-text')
         .text(review.content)
 
+    let info = $(document.createElement('div')).addClass('review-info')
+    let avatar = $(document.createElement('img'))
+    if (review.author_details.avatar_path) {
+        $(avatar)
+            .attr('src', getReviewAvatarPath(review))
+            .addClass('rounded-circle')
+    } else {
+        $(avatar).addClass('hidden')
+    }
+
+    let infoText = $(document.createElement('div'))
+    let author = $(document.createElement('h5'))
+        .addClass('card-title')
+        .text(getAuthorAndRatingString(review))
+
+    let creationDate = new Date(review.created_at)
+    let date = $(document.createElement('h6'))
+        .addClass('card-subtitle')
+        .text(creationDate.toLocaleString())
+
+    infoText.append(author, date)
+    info.append(avatar, infoText)
+    card.append(cardBody.append(body, info))
+    return card
+}
+
+function updateReviewElement(review) {
+    let card = $('#current-review').children().first()
+
+    $(card).attr('data-review-id', review.id)
+    $(card).attr('data-author-username', review.author_details.username)
+
+    $(card).find('.card-text').first().text(review.content)
+
+    if (review.author_details.avatar_path) {
+        $(card).find('img').first().attr('src', getReviewAvatarPath(review))
+        $(card).find('img').first().removeClass('hidden')
+    } else {
+        $(card).find('img').first().attr('src', '')
+        $(card).find('img').first().addClass('hidden')
+    }
+
+    $(card).find('.card-title').first().text(getAuthorAndRatingString(review))
+
+    let creationDate = new Date(review.created_at)
+    $(card).find('.card-subtitle').first().text(creationDate.toLocaleString())
+}
+function getReviewAvatarPath(review) {
+    if (!review.author_details.avatar_path) {
+        return null
+    }
+
     let avatarPath
     if (review.author_details.avatar_path.includes('gravatar')) {
         avatarPath = review.author_details.avatar_path
@@ -485,19 +548,14 @@ function createReviewElement(review) {
     } else {
         avatarPath = `https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`
     }
-    let avatar = $(document.createElement('img')).attr('src', avatarPath)
-
-    let author = $(document.createElement('h5'))
-        .addClass('card-title')
-        .text(`${review.author_details.rating} by ${review.author}`)
-
-    let creationDate = new Date(review.created_at)
-    let date = $(document.createElement('h6'))
-        .addClass('card-subtitle')
-        .text(creationDate.toLocaleString())
-
-    card.append(cardBody.append(body, avatar, author, date))
-    return card
+    return avatarPath
+}
+function getAuthorAndRatingString(review) {
+    if (review.author_details.rating) {
+        return `${review.author_details.rating} by ${review.author}`
+    } else {
+        return `${review.author}`
+    }
 }
 function hideInfo(element) {
     $(element).text = ''

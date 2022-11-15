@@ -331,14 +331,13 @@ function attachMovieListeners(API) {
     const viewMovieListener = function (event) {
         viewMovieDetails(API, event.currentTarget)
     }
-
     $(upcomingMovies).each((i, el) => {
         el.addEventListener('click', viewMovieListener)
     })
 
     addReviewPageListeners()
 
-    $('#info-collapse').on('hidden.bs.collapse', resetMovieDetails)
+    addDetailsViewListeners()
 }
 
 function viewMovieDetails(API, target) {
@@ -356,6 +355,43 @@ function viewMovieDetails(API, target) {
             // it's disappeared.
             $(collapseEl).collapse('show')
         })
+    })
+}
+
+function addDetailsViewListeners() {
+    $('#info-collapse').on('show.bs.collapse', () => {
+        // JQuery compatible bootstrap methods & html attrs not working.
+        // Use standard bootstrap JS.
+        let moviesCarousel = bootstrap.Carousel.getInstance(
+            document.getElementById('movies-carousel')
+        )
+        let actorsCarousel = bootstrap.Carousel.getInstance(
+            document.getElementById('actors-carousel')
+        )
+        moviesCarousel.pause()
+        actorsCarousel.pause()
+    })
+
+    $('#info-collapse').on('hidden.bs.collapse', resetMovieDetails)
+    $('#info-collapse').on('hidden.bs.collapse', () => {
+        let moviesCarousel = bootstrap.Carousel.getInstance(
+            document.getElementById('movies-carousel')
+        )
+        let actorsCarousel = bootstrap.Carousel.getInstance(
+            document.getElementById('actors-carousel')
+        )
+        moviesCarousel.cycle()
+        actorsCarousel.cycle()
+    })
+}
+
+function addReviewPageListeners() {
+    $('#reviews nav').on('click', '.index', (event) => {
+        changeReviewPage(event.currentTarget)
+    })
+
+    $('#reviews nav').on('click', '.control', function (event) {
+        incrementReview(event.currentTarget)
     })
 }
 
@@ -631,16 +667,6 @@ function changeReviewPage(li) {
     } else {
         enablePageControl($('#review-prev'))
     }
-}
-
-function addReviewPageListeners() {
-    $('#reviews nav').on('click', '.index', (event) => {
-        changeReviewPage(event.currentTarget)
-    })
-
-    $('#reviews nav').on('click', '.control', function (event) {
-        incrementReview(event.currentTarget)
-    })
 }
 
 function hideInfo(element) {

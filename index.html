@@ -65,10 +65,6 @@
           <div id="cast"></div>
           <div id="reviews" class="p-2 m-2 border-bottom border-top">
             <h5>Reviews</h5>
-            <div id="current-review"></div>
-            <div id="no-reviews" class="hidden">
-              <p>There are no reviews for this movie.</p>
-            </div>
             <nav aria-label="review navigation">
               <ul class="pagination pagination-sm">
                 <li id="review-prev" class="page-item control">
@@ -79,6 +75,10 @@
                 </li>
               </ul>
             </nav>
+            <div id="current-review"></div>
+            <div id="no-reviews" class="hidden">
+              <p>There are no reviews for this movie.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -90,6 +90,7 @@
           id="movies-carousel"
           class="pe-none carousel slide col-9"
           data-bs-ride="carousel"
+          data-bs-pause="false"
         >
           <h2>Upcoming Movies</h2>
           <!-- <div class="position-absolute spinner-border text-dark" role="status">
@@ -208,7 +209,11 @@
           id="actors-carousel"
           class="col-3 carousel slide"
           data-bs-ride="carousel"
+          data-bs-pause="false"
         >
+          <!-- Removing data-bs-pause="false" from
+          carousels seems to break current pausing
+          functionality -->
           <h4>Featuring Actors</h4>
           <div class="carousel-inner"></div>
           <button

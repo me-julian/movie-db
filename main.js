@@ -265,6 +265,7 @@ function populateTopRated(API, movies) {
                 images.posters
             )
             imageString = poster.file_path
+            $(el).attr('data-id', movies.results[i].id)
             $(el)
                 .children('img')
                 .attr(
@@ -327,6 +328,7 @@ function initEventListeners(API) {
 }
 function attachMovieListeners(API) {
     let upcomingMovies = $(`#movies-carousel .carousel-item > div`)
+    let topMovies = $('#top-ten .card')
 
     const viewMovieListener = function (event) {
         viewMovieDetails(API, event.currentTarget)
@@ -334,8 +336,11 @@ function attachMovieListeners(API) {
     $(upcomingMovies).each((i, el) => {
         el.addEventListener('click', viewMovieListener)
     })
+    $(topMovies).each((i, el) => {
+        el.addEventListener('click', viewMovieListener)
+    })
 
-    addReviewPageListeners()
+    addReviewPageListeners(API)
 
     addDetailsViewListeners()
 }
@@ -359,6 +364,9 @@ function viewMovieDetails(API, target) {
 }
 
 function addDetailsViewListeners() {
+    // ISSUE: Still needs to make sure pause() is called
+    // when it's not transitioning. Pretty sure it can still
+    // not pause properly.
     $('#info-collapse').on('show.bs.collapse', () => {
         // JQuery compatible bootstrap methods & html attrs not working.
         // Use standard bootstrap JS.
@@ -385,7 +393,16 @@ function addDetailsViewListeners() {
     })
 }
 
-function addReviewPageListeners() {
+function addReviewPageListeners(API) {
+    // const reviewsPageRequest = new Event('reviewsPageRequest')
+
+    // $('#reviews nav').on('reviewsPageRequest', () => {
+    //     const request = retrieveReviewsPage(API)
+    //     request.done((data) => {
+    //         console.log(data)
+    //     })
+    // })
+
     $('#reviews nav').on('click', '.index', (event) => {
         changeReviewPage(event.currentTarget)
     })
@@ -395,7 +412,29 @@ function addReviewPageListeners() {
     })
 }
 
+function retrieveReviewsPage(API) {
+    const request = $.Deferred()
+
+    const page = $('#reviews nav').attr('page')
+    const movieId = $('#details-wrapper').attr('movie-id')
+    $.get({
+        url: `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${
+            API.key
+        }&language=en-US&page=${parseInt(page) + 1}`,
+        success: (data) => {
+            request.resolve(data)
+        },
+    }).fail(() => {
+        console.error('Failed to retrieve movie cast.')
+        request.reject()
+    })
+
+    return request.promise()
+}
+
 function resetMovieDetails() {
+    // Reset id on wrapper.
+    $('#details-wrapper').removeAttr('movie-id')
     // Reset populateMovieDetails elements which may have been hidden.
     $('.hidden').removeClass('hidden')
     $('#no-reviews').addClass('hidden')
@@ -404,11 +443,6 @@ function resetMovieDetails() {
     // Reset review pagination
     $('#reviews nav .index').remove()
 }
-
-// Need to add listeners to closing/changing movie details.
-// Delete pagination inside, can probably put other stuff like
-// basic reviews as well. Easier, more centralized to decide
-// when to remake/populate stuff.
 
 function retrieveMovieDetails(API, movieId) {
     const request = $.Deferred()
@@ -428,6 +462,8 @@ function retrieveMovieDetails(API, movieId) {
 }
 function populateMovieDetails(movie) {
     const completed = $.Deferred()
+
+    $('#details-wrapper').attr('movie-id', movie.id)
 
     $('#title').text(movie.title)
     if (
@@ -518,7 +554,7 @@ function populateMovieDetailsReviews(movie) {
         }
     }
 
-    setReviewPagination(movie.reviews)
+    initReviewPagination(movie.reviews)
 }
 
 function createReviewElement(review) {
@@ -528,9 +564,12 @@ function createReviewElement(review) {
 
     let cardBody = $(document.createElement('div')).addClass('card-body')
 
+    // Currently scrolling as default, fairly small.
+    // Probably would be nicer to shorten and add a 'read more'
+    // with a simple modal screen.
     let body = $(document.createElement('p'))
-        .addClass('card-text')
-        .text(review.content)
+        .addClass('card-text overflow-scroll')
+        .append(formatReviewContent(review.content))
 
     let info = $(document.createElement('div')).addClass('review-info')
     let avatar = $(document.createElement('img'))
@@ -564,12 +603,13 @@ function updateReviewElement(review) {
     $(card).attr('data-review-id', review.id)
     $(card).attr('data-author-username', review.author_details.username)
 
-    $(card).find('.card-text').first().text(review.content)
+    $(card).find('.card-text').children().remove()
+    $(card).find('.card-text').append(formatReviewContent(review.content))
 
     if (review.author_details.avatar_path) {
         $(card).find('img').first().attr('src', getReviewAvatarPath(review))
+        $(card).find('img').first().removeClass('hidden')
     } else {
-        $(card).find('img').first().attr('src', '')
         hideInfo($(card).find('img').first())
     }
 
@@ -602,23 +642,43 @@ function getAuthorAndRatingString(review) {
     }
 }
 
-function setReviewPagination(reviewPage) {
-    if (reviewPage.results.length > 0) {
-        disablePageControl($('#review-prev'))
-        for (let i = 0; i < reviewPage.results.length; i++) {
-            createPageLink(i)
-        }
-        // Select first review
-        $('#reviews nav .index').first().addClass('active')
+function formatReviewContent(content) {
+    let contents = content.split(/(?:\r\n|\r|\n)/g)
+    return contents
+        .map((v) => {
+            if (v) {
+                return `<p>${v}</p>`
+            } else {
+                return '<br>'
+            }
+        })
+        .join('')
+}
 
-        if (reviewPage.results.length > 1) {
-            enablePageControl($('#review-next'))
-        } else {
-            disablePageControl($('#review-next'))
-        }
+function initReviewPagination(reviews) {
+    $('#reviews nav').attr('data-page', '1')
+    if (reviews.results.length > 0) {
+        populateReviewPagination(reviews, 1, 0)
     } else {
         hideInfo($('#reviews nav'))
     }
+}
+function populateReviewPagination(reviews, page, index) {
+    for (let i = index; i < reviews.results.length; i++) {
+        createPageLink(i, reviews.results[i])
+    }
+    // Select first review
+    $('#reviews nav .index').first().addClass('active')
+
+    if (reviews.total_pages > parseInt($('#reviews nav').attr('page'))) {
+        $('#review-next').attr('continue', 'true')
+    }
+    if (reviews.total_pages < parseInt($('#reviews nav').attr('page'))) {
+        $('#review-prev').attr('continue', 'true')
+    }
+
+    checkPrevBtnStatus()
+    checkNextBtnStatus()
 }
 function enablePageControl(link) {
     $(link).toggleClass('disabled', false)
@@ -627,22 +687,24 @@ function disablePageControl(link) {
     $(link).toggleClass('disabled', true)
 }
 function incrementReview(btn) {
-    let selectedLi
+    let li
     if (btn.id === 'review-prev') {
-        selectedLi = $('#reviews nav .active').prev('.index')
+        li = $('#reviews nav .active').prev('.index')
     } else if (btn.id === 'review-next') {
-        selectedLi = $('#reviews nav .active').next('.index')
+        li = $('#reviews nav .active').next('.index')
     } else {
         console.error('Unexpected event target incrementing viewed review.')
     }
-    if (selectedLi[0]) {
-        changeReviewPage(selectedLi)
+    if (li[0]) {
+        changeReviewPage(li[0])
     } else {
         console.log('end of shown items')
         // Get new review page
+        // No movies currently showing have more than 1 page.
+        // Could test with Avengers: Endgame (56 reviews)
     }
 }
-function createPageLink(reviewIndex) {
+function createPageLink(reviewIndex, review) {
     let li = $(document.createElement('li'))
         .addClass('page-item index')
         .attr('data-index', reviewIndex)
@@ -651,6 +713,9 @@ function createPageLink(reviewIndex) {
             .addClass('page-link user-select-none')
             .text(reviewIndex + 1)
     )
+
+    // Attach review data to HTML object for easy retrieval later.
+    li[0].reviewData = review
 
     let btns = $('#reviews nav .page-item')
     li.insertAfter($(btns)[btns.length - 2])
@@ -661,8 +726,21 @@ function changeReviewPage(li) {
     prevButton.removeClass('active')
 
     $(li).addClass('active')
+    updateReviewElement(li.reviewData)
 
-    if ($(li).attr('data-index') === '0') {
+    checkPrevBtnStatus()
+    checkNextBtnStatus()
+}
+
+function checkNextBtnStatus(li = $('#reviews nav .active')) {
+    if ($(li).is(':nth-last-child(2)') && !$(li).attr('continue')) {
+        disablePageControl($('#review-next'))
+    } else {
+        enablePageControl($('#review-next'))
+    }
+}
+function checkPrevBtnStatus(li = $('#reviews nav .active')) {
+    if ($(li).is(':nth-child(2)') && !$(li).attr('continue')) {
         disablePageControl($('#review-prev'))
     } else {
         enablePageControl($('#review-prev'))

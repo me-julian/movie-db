@@ -91,6 +91,10 @@ body {
     pointer-events: none;
 }
 
+#current-review .card-text {
+    max-height: 10em;
+}
+
 .hidden {
     display: none;
 }

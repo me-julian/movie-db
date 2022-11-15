@@ -85,8 +85,10 @@ body {
 #reviews .page-item {
     cursor: pointer;
 }
-#reviews .page-item.disabled {
+#reviews .page-item.disabled,
+#reviews .page-item.active {
     cursor: auto;
+    pointer-events: none;
 }
 
 .hidden {

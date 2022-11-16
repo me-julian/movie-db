@@ -91,6 +91,13 @@ body {
     pointer-events: none;
 }
 
+.page-set {
+    display: none;
+}
+.page-set.active {
+    display: flex;
+}
+
 #current-review .card-text {
     max-height: 10em;
 }

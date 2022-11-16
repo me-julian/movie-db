@@ -394,14 +394,14 @@ function addDetailsViewListeners() {
 }
 
 function addReviewPageListeners(API) {
-    // const reviewsPageRequest = new Event('reviewsPageRequest')
+    const reviewsPageRequest = $.Event('reviewsPageRequest')
 
-    // $('#reviews nav').on('reviewsPageRequest', () => {
-    //     const request = retrieveReviewsPage(API)
-    //     request.done((data) => {
-    //         console.log(data)
-    //     })
-    // })
+    $('#reviews nav').on('reviewsPageRequest', () => {
+        const request = retrieveReviewsPage(API)
+        request.done((reviews) => {
+            populateReviewPagination(reviews, reviews.page * 20 - 20 + 1)
+        })
+    })
 
     $('#reviews nav').on('click', '.index', (event) => {
         changeReviewPage(event.currentTarget)
@@ -415,7 +415,7 @@ function addReviewPageListeners(API) {
 function retrieveReviewsPage(API) {
     const request = $.Deferred()
 
-    const page = $('#reviews nav').attr('page')
+    const page = $('#reviews nav .page-set.active').attr('data-page')
     const movieId = $('#details-wrapper').attr('movie-id')
     $.get({
         url: `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${
@@ -425,7 +425,7 @@ function retrieveReviewsPage(API) {
             request.resolve(data)
         },
     }).fail(() => {
-        console.error('Failed to retrieve movie cast.')
+        console.error('Failed to retrieve next page of reviews.')
         request.reject()
     })
 
@@ -441,7 +441,7 @@ function resetMovieDetails() {
     // Reset reviews
     $('#current-review').children().remove()
     // Reset review pagination
-    $('#reviews nav .index').remove()
+    $('#reviews nav .page-set').remove()
 }
 
 function retrieveMovieDetails(API, movieId) {
@@ -568,7 +568,7 @@ function createReviewElement(review) {
     // Probably would be nicer to shorten and add a 'read more'
     // with a simple modal screen.
     let body = $(document.createElement('p'))
-        .addClass('card-text overflow-scroll')
+        .addClass('card-text overflow-auto')
         .append(formatReviewContent(review.content))
 
     let info = $(document.createElement('div')).addClass('review-info')
@@ -658,71 +658,123 @@ function formatReviewContent(content) {
 function initReviewPagination(reviews) {
     $('#reviews nav').attr('data-page', '1')
     if (reviews.results.length > 0) {
-        populateReviewPagination(reviews, 1, 0)
+        populateReviewPagination(reviews, 1)
     } else {
         hideInfo($('#reviews nav'))
     }
 }
-function populateReviewPagination(reviews, page, index) {
-    for (let i = index; i < reviews.results.length; i++) {
-        createPageLink(i, reviews.results[i])
+function populateReviewPagination(reviews, reviewNum) {
+    for (let sets = 0; sets < reviews.results.length / 10; sets++) {
+        let set = $(document.createElement('div'))
+            .addClass('pagination pagination-sm page-set')
+            .attr('data-page', reviews.page)
+            .insertBefore('#review-next')
+        let i
+        if (sets === 0) {
+            i = 0
+        } else {
+            i = 10
+        }
+        for (
+            i;
+            $(set).children().length < 10 && i < reviews.results.length;
+            i++
+        ) {
+            createPageLink(reviewNum, reviews.results[i], set)
+            reviewNum++
+        }
     }
-    // Select first review
-    $('#reviews nav .index').first().addClass('active')
 
-    if (reviews.total_pages > parseInt($('#reviews nav').attr('page'))) {
-        $('#review-next').attr('continue', 'true')
-    }
-    if (reviews.total_pages < parseInt($('#reviews nav').attr('page'))) {
-        $('#review-prev').attr('continue', 'true')
+    $('#reviews nav .page-set').each(function (i, el) {
+        setPageContinuation(el, reviews)
+    })
+
+    if (!$('#reviews nav .page-set.active').length) {
+        // Select first set and hide a potential second set.
+        $('#reviews nav .page-set').first().addClass('active')
+        // Select first review.
+        $('#reviews nav .page-set.active .index').first().addClass('active')
+    } else {
+        // If adding new sew sets, switch from current to one
+        // just created
+        switchToExistingPageSet(
+            $('#reviews nav .page-set.active').next('.page-set')
+        )
     }
 
-    checkPrevBtnStatus()
     checkNextBtnStatus()
+    checkPrevBtnStatus()
 }
-function enablePageControl(link) {
-    $(link).toggleClass('disabled', false)
+
+function createPageLink(num, review, wrapper) {
+    let li = $(document.createElement('li')).addClass('page-item index')
+    li.append(
+        $(document.createElement('a'))
+            .addClass('page-link user-select-none')
+            .text(num)
+    )
+
+    // Attach review data to HTML object for easy retrieval later.
+    li[0].reviewData = review
+
+    wrapper.append(li)
 }
-function disablePageControl(link) {
-    $(link).toggleClass('disabled', true)
+
+function setPageContinuation(set, reviews) {
+    if (
+        reviews.total_pages > parseInt($(set).attr('data-page')) ||
+        $(set).next('.page-set').length
+    ) {
+        $(set).children().last().attr('data-continue', 'true')
+    }
+    if ($(set).prev('.page-set').length > 0) {
+        $(set).children().first().attr('data-continue', 'true')
+    }
 }
 function incrementReview(btn) {
-    let li
+    let li, newSet
     if (btn.id === 'review-prev') {
-        li = $('#reviews nav .active').prev('.index')
+        li = $('#reviews nav .page-item.active').prev('.index')
+        newSet = $('#reviews nav .page-set.active').prev('.page-set')
     } else if (btn.id === 'review-next') {
-        li = $('#reviews nav .active').next('.index')
+        li = $('#reviews nav .page-item.active').next('.index')
+        newSet = $('#reviews nav .page-set.active').next('.page-set')
     } else {
         console.error('Unexpected event target incrementing viewed review.')
     }
     if (li[0]) {
         changeReviewPage(li[0])
     } else {
-        console.log('end of shown items')
-        // Get new review page
-        // No movies currently showing have more than 1 page.
-        // Could test with Avengers: Endgame (56 reviews)
+        changeReviewPageSet(newSet)
     }
 }
-function createPageLink(reviewIndex, review) {
-    let li = $(document.createElement('li'))
-        .addClass('page-item index')
-        .attr('data-index', reviewIndex)
-    li.append(
-        $(document.createElement('a'))
-            .addClass('page-link user-select-none')
-            .text(reviewIndex + 1)
-    )
+function changeReviewPageSet(newSet) {
+    if (newSet[0]) {
+        switchToExistingPageSet(newSet)
+    } else {
+        loadNewReviews()
+    }
+}
+function switchToExistingPageSet(newSet) {
+    let initialReview
 
-    // Attach review data to HTML object for easy retrieval later.
-    li[0].reviewData = review
+    if (
+        !$('#reviews nav .page-set.active .page-item.active').length ||
+        $('#reviews nav .page-set.active .page-item.active').is(':last-child')
+    ) {
+        initialReview = $(newSet).children().first()
+    } else {
+        initialReview = $(newSet).children().last()
+    }
 
-    let btns = $('#reviews nav .page-item')
-    li.insertAfter($(btns)[btns.length - 2])
+    $('#reviews nav .page-set.active').removeClass('active')
+    newSet.addClass('active')
+
+    changeReviewPage(initialReview[0])
 }
 
 function changeReviewPage(li) {
-    let prevButton = $('#reviews nav .active').first()
+    let prevButton = $('#reviews nav .page-item.active').first()
     prevButton.removeClass('active')
 
     $(li).addClass('active')
@@ -732,21 +784,51 @@ function changeReviewPage(li) {
     checkNextBtnStatus()
 }
 
-function checkNextBtnStatus(li = $('#reviews nav .active')) {
-    if ($(li).is(':nth-last-child(2)') && !$(li).attr('continue')) {
+function checkNextBtnStatus(
+    li = $('#reviews nav .page-set.active .page-item.active')
+) {
+    if ($(li).is(':last-child') && !($(li).attr('data-continue') === 'true')) {
         disablePageControl($('#review-next'))
     } else {
         enablePageControl($('#review-next'))
     }
 }
-function checkPrevBtnStatus(li = $('#reviews nav .active')) {
-    if ($(li).is(':nth-child(2)') && !$(li).attr('continue')) {
+function checkPrevBtnStatus(li = $('#reviews nav .page-item.active')) {
+    if ($(li).is(':first-child') && !($(li).attr('data-continue') === 'true')) {
         disablePageControl($('#review-prev'))
     } else {
         enablePageControl($('#review-prev'))
     }
 }
 
+function enablePageControl(link) {
+    $(link).toggleClass('disabled', false)
+}
+function disablePageControl(link) {
+    $(link).toggleClass('disabled', true)
+}
+
+function loadNewReviews() {
+    const request = $.Deferred()
+
+    $('#reviews nav').trigger('reviewsPageRequest')
+
+    return request.promise()
+}
+
 function hideInfo(element) {
     $(element).addClass('hidden')
 }
+
+$('#testButton').on('click', () => {
+    $.get({
+        url: `https://api.themoviedb.org/3/movie/299534?api_key=2f53ed057a5040f94bf52c398ed4a659&language=en-US&append_to_response=credits,reviews`,
+        success: (data) => {
+            $('#testButton').attr('data-id', data.id)
+            viewMovieDetails(
+                {key: '2f53ed057a5040f94bf52c398ed4a659'},
+                $('#testButton')
+            )
+        },
+    })
+})

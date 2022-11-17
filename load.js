@@ -402,6 +402,20 @@ function addReviewPageListeners(API) {
     })
 }
 
+function resetInfoDetails() {
+    // Reset movie/actor elements which may have been hidden.
+    $('#info-collapse .hidden').removeClass('hidden')
+    // Reset id on containers, re-add initially hidden els.
+    $('#movie-details').addClass('hidden').removeAttr('data-movie-id')
+    $('#actor-details').addClass('hidden').removeAttr('data-actor-id')
+    $('#no-reviews').addClass('hidden')
+    // Reset reviews & their pagination
+    $('#current-review').children().remove()
+    $('#reviews nav .page-set').remove()
+    // Reset actor credits
+    $('#actor-details #credits').children().remove()
+}
+
 $('#testButton').on('click', () => {
     $.get({
         url: `https://api.themoviedb.org/3/movie/299534?api_key=2f53ed057a5040f94bf52c398ed4a659&language=en-US&append_to_response=credits,reviews`,

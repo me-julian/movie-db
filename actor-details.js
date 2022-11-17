@@ -40,8 +40,7 @@ function populateActorDetails(actor) {
 
     $('#actor-details #portrait')
         .attr('src', `https://image.tmdb.org/t/p/original${actor.profile_path}`)
-        .addClass('w-25')
-
+        .addClass('w-100')
     $('#actor-details #name').text(actor.name)
 
     setBiographyString(actor.biography)
@@ -60,7 +59,7 @@ function populateActorDetails(actor) {
         hideInfo('#actor-details #p-o-b')
     }
 
-    populateActorCredits(actor.movie_credits)
+    populateActorCredits(actor.movie_credits.cast)
 
     completed.resolve()
     return completed.promise()
@@ -104,4 +103,40 @@ function setBiographyString(bio) {
 
 function populateActorCredits(credits) {
     const container = $('#actor-details #credits')
+    credits = credits.sort(sortCreditDate)
+    for (let credit of credits) {
+        if (credit.character) {
+            container.append(
+                $(document.createElement('li'))
+                    .addClass('d-flex align-items-center cast-credit')
+                    .attr('data-movie-id', credit.id)
+                    .html(getCastCreditString(credit))
+            )
+        } else {
+            continue
+        }
+    }
+}
+function sortCreditDate(a, b) {
+    if (!a.release_date) {
+        return -1
+    } else {
+        a = a.release_date.split('-')
+        const aDate = new Date(...a)
+        b = b.release_date.split('-')
+        const bDate = new Date(...b)
+        return bDate - aDate
+    }
+}
+function getCastCreditString(credit) {
+    const character = `<div><p class="my-0">${credit.character}</p>`
+    const title = `<p class="my-0 fst-italic">${credit.title}</p6></div>`
+    let release
+    if (credit.release_date) {
+        release = credit.release_date.substr(0, 4)
+    } else {
+        release = 'TBA'
+    }
+    const date = `<p class="my-0 ms-auto justify-self-end">${release}</p>`
+    return character + title + date
 }

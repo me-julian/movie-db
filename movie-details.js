@@ -18,18 +18,6 @@ function viewMovieDetails(API, target) {
     })
 }
 
-function resetInfoDetails() {
-    // Reset movie/actor elements which may have been hidden.
-    $('#info-collapse .hidden').removeClass('hidden')
-    // Reset id on containers, re-add initially hidden els.
-    $('#movie-details').addClass('hidden').removeAttr('data-movie-id')
-    $('#actor-details').addClass('hidden').removeAttr('data-actor-id')
-    $('#no-reviews').addClass('hidden')
-    // Reset reviews & their pagination
-    $('#current-review').children().remove()
-    $('#reviews nav .page-set').remove()
-}
-
 function retrieveMovieDetails(API, movieId) {
     const request = $.Deferred()
 

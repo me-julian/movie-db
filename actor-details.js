@@ -1,0 +1,107 @@
+'use strict'
+
+function viewActorDetails(API, target) {
+    let collapseEl = document.querySelector('#info-collapse')
+    if ($(collapseEl).hasClass('show')) {
+        $(collapseEl).collapse('hide')
+    }
+
+    let actorId = $(target).attr('data-actor-id')
+    const ActorDetailsRequest = retrieveActorDetails(API, actorId)
+    ActorDetailsRequest.done((data) => {
+        const detailsLoaded = populateActorDetails(data)
+        detailsLoaded.done(() => {
+            $(collapseEl).collapse('show')
+        })
+    })
+}
+
+function retrieveActorDetails(API, actorId) {
+    const request = $.Deferred()
+
+    $.get({
+        url: `https://api.themoviedb.org/3/person/${actorId}?api_key=${API.key}&language=en-US&append_to_response=movie_credits%2Cimages`,
+        success: (data) => {
+            console.log(data)
+            request.resolve(data)
+        },
+    }).fail(() => {
+        console.error('Failed to retrieve actor details.')
+        request.reject()
+    })
+
+    return request.promise()
+}
+
+function populateActorDetails(actor) {
+    const completed = $.Deferred()
+
+    $('#actor-details').attr('data-actor-id', actor.id).removeClass('hidden')
+
+    $('#actor-details #portrait')
+        .attr('src', `https://image.tmdb.org/t/p/original${actor.profile_path}`)
+        .addClass('w-25')
+
+    $('#actor-details #name').text(actor.name)
+
+    setBiographyString(actor.biography)
+
+    if (actor.birthday) {
+        $('#actor-details #age').text(
+            getActorAgeString(actor.birthday, actor.deathday)
+        )
+    } else {
+        hideInfo('#actor-details #age')
+    }
+
+    if (actor.place_of_birth) {
+        $('#actor-details #p-o-b').text(actor.place_of_birth)
+    } else {
+        hideInfo('#actor-details #p-o-b')
+    }
+
+    populateActorCredits(actor.movie_credits)
+
+    completed.resolve()
+    return completed.promise()
+}
+function getActorAgeString(bDay, dDay) {
+    bDay = bDay.split('-')
+    const bDate = new Date(...bDay)
+
+    const options = {year: 'numeric', month: 'long', day: 'numeric'}
+    let string = `Born ${bDate.toLocaleDateString(undefined, options)}`
+
+    let age
+    if (dDay !== null) {
+        const dDate = new Date(endDay)
+        age = calcAge(bDate.getTime(), dDate.getTime())
+        return (string += `, died ${dDate.toLocaleDateString(
+            undefined,
+            options
+        )}} at ${age}`)
+    } else {
+        age = calcAge(bDate.getTime(), Date.now())
+        return (string += ` (${age})`)
+    }
+}
+function calcAge(bDate, endDate) {
+    const ageDifMs = endDate - bDate
+    const ageDate = new Date(ageDifMs) // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970)
+}
+
+function setBiographyString(bio) {
+    if (bio.includes('Description above from')) {
+        bio = bio.split('Description above from ')
+        $('#actor-details #bio').text(bio[0])
+        $('#actor-details #bio-src').text(`Description above from ${bio[1]}`)
+    } else {
+        $('#actor-details #bio').text(bio)
+        hideInfo($('#actor-details #bio-src'))
+    }
+}
+
+function populateActorCredits(credits) {
+    const container = $('#actor-details #credits')
+}

@@ -30,20 +30,20 @@
         class="position-absolute container-fluid collapse"
         id="info-collapse"
       >
-        <div id="details-wrapper" class="container">
+        <button
+          type="button"
+          class="btn-close ms-auto"
+          aria-label="Close"
+          data-bs-toggle="collapse"
+          data-bs-target="#info-collapse"
+        ></button>
+        <div id="movie-details" class="container hidden">
           <div class="d-flex">
             <div>
               <h2 id="title"></h2>
               <h4 id="original-title"></h4>
             </div>
             <h3 id="rating"></h3>
-            <button
-              type="button"
-              class="btn-close ms-auto"
-              aria-label="Close"
-              data-bs-toggle="collapse"
-              data-bs-target="#info-collapse"
-            ></button>
           </div>
           <div class="d-flex">
             <img id="poster" class="rounded" src="" />
@@ -62,7 +62,9 @@
               <li id="revenue" class="list-group-item"></li>
             </ul>
           </div>
-          <div id="cast"></div>
+          <div id="cast">
+            <!-- To be added -->
+          </div>
           <div id="reviews" class="p-2 m-2 border-bottom border-top">
             <h5>Reviews</h5>
             <nav aria-label="review navigation">
@@ -79,6 +81,25 @@
             <div id="no-reviews" class="hidden">
               <p>There are no reviews for this movie.</p>
             </div>
+          </div>
+        </div>
+        <div id="actor-details" class="container hidden">
+          <div class="d-flex">
+            <img id="portrait" class="rounded" src="" />
+            <div class="p-4">
+              <h2 id="name"></h2>
+              <p id="bio" class=""></p>
+              <p id="bio-src" class="my-1 fw-light"></p>
+              <div id="credits">
+                <h5>Credits</h5>
+              </div>
+            </div>
+          </div>
+          <div id="misc" class="col-4">
+            <ul class="list-group list-group-flush">
+              <li id="age" class="list-group-item"></li>
+              <li id="p-o-b" class="list-group-item"></li>
+            </ul>
           </div>
         </div>
       </section>
@@ -302,11 +323,15 @@
     </main>
     <footer class="bg-dark text-white px-5 py-3">
       <div id="'test">
-        <button class="btn btn-primary" id="testButton">Open test</button>
+        <button class="btn btn-primary" id="testButton">
+          Open Avengers Page (Multi-page review test)
+        </button>
       </div>
       <span
         ><h5>All movie and actor data courtesy of</h5>
-        <img src="./img/tmdblogo.svg" alt="The Movie DB" class="col-1" />
+        <a href="https://www.themoviedb.org"
+          ><img src="./img/tmdblogo.svg" alt="The Movie DB" class="col-1"
+        /></a>
       </span>
     </footer>
     <!-- Bootstrap JavaScript Bundle w/ Popper -->
@@ -315,6 +340,8 @@
       integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
       crossorigin="anonymous"
     ></script>
-    <script src="main.js"></script>
+    <script src="load.js"></script>
+    <script src="movie-details.js"></script>
+    <script src="actor-details.js"></script>
   </body>
 </html>

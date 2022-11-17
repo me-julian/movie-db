@@ -436,7 +436,7 @@ function resetMovieDetails() {
     // Reset id on wrapper.
     $('#details-wrapper').removeAttr('movie-id')
     // Reset populateMovieDetails elements which may have been hidden.
-    $('.hidden').removeClass('hidden')
+    $('#info-collapse .hidden').removeClass('hidden')
     $('#no-reviews').addClass('hidden')
     // Reset reviews
     $('#current-review').children().remove()
@@ -474,14 +474,19 @@ function populateMovieDetails(movie) {
     } else {
         $('#original-title').text('')
     }
-    $('#rating').text(movie.vote_average.toFixed(2))
 
     $('#poster').attr(
         'src',
         `https://image.tmdb.org/t/p/w200${movie.poster_path}`
     )
 
-    $('#release-date').text(movie.release_date.slice(0, 4))
+    if (movie.status === 'Released') {
+        $('#release-date').text(movie.release_date.slice(0, 4))
+        $('#rating').text(movie.vote_average.toFixed(2))
+    } else {
+        $('#release-date').text(`Coming ${movie.release_date.slice(0, 4)}`)
+        $('#rating').addClass('hidden').text('')
+    }
     $('#overview').text(movie.overview)
 
     populateMovieDetailsMisc(movie)

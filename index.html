@@ -52,7 +52,7 @@
               <p id="overview" class=""></p>
             </div>
           </div>
-          <div id="misc" class="col-4">
+          <div class="col-4">
             <ul class="list-group list-group-flush">
               <li id="genres" class="list-group-item"></li>
               <li id="runtime" class="list-group-item"></li>
@@ -85,8 +85,14 @@
         </div>
         <div id="actor-details" class="container hidden">
           <div class="d-flex">
-            <div>
+            <div class="col-2">
               <img id="portrait" class="rounded" src="" />
+              <div>
+                <ul class="list-group list-group-flush text-center">
+                  <li id="age" class="list-group-item"></li>
+                  <li id="p-o-b" class="list-group-item"></li>
+                </ul>
+              </div>
             </div>
             <div class="px-4">
               <h2 id="name"></h2>
@@ -97,12 +103,6 @@
                 <ul id="credits" class="row row-cols-2"></ul>
               </div>
             </div>
-          </div>
-          <div id="misc" class="col-4">
-            <ul class="list-group list-group-flush">
-              <li id="age" class="list-group-item"></li>
-              <li id="p-o-b" class="list-group-item"></li>
-            </ul>
           </div>
         </div>
       </section>

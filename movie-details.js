@@ -72,12 +72,12 @@ function populateMovieDetails(movie) {
 
     $('#poster').attr(
         'src',
-        `https://image.tmdb.org/t/p/w200${movie.poster_path}`
+        `https://image.tmdb.org/t/p/w500${movie.poster_path}`
     )
 
     if (movie.status === 'Released') {
         $('#release-date').text(movie.release_date.slice(0, 4))
-        $('#rating').text(movie.vote_average.toFixed(2))
+        $('#rating').text(movie.vote_average.toFixed(1))
     } else {
         $('#release-date').text(`Coming ${movie.release_date.slice(0, 4)}`)
         $('#rating').addClass('hidden').text('')
@@ -206,14 +206,6 @@ function createReviewElement(review) {
         .append(formatReviewContent(review.content))
 
     let info = $(document.createElement('div')).addClass('review-info')
-    let avatar = $(document.createElement('img'))
-    if (review.author_details.avatar_path) {
-        $(avatar)
-            .attr('src', getReviewAvatarPath(review))
-            .addClass('rounded-circle')
-    } else {
-        hideInfo($(avatar))
-    }
 
     let infoText = $(document.createElement('div'))
     let author = $(document.createElement('h5'))
@@ -226,7 +218,15 @@ function createReviewElement(review) {
         .text(creationDate.toLocaleString())
 
     infoText.append(author, date)
-    info.append(avatar, infoText)
+
+    if (review.author_details.avatar_path) {
+        let avatar = getReviewAvatar(review)
+        info.append(avatar)
+    } else {
+        $('.avatar').remove()
+    }
+
+    info.append(infoText)
     card.append(cardBody.append(body, info))
     return card
 }
@@ -241,16 +241,28 @@ function updateReviewElement(review) {
     $(card).find('.card-text').append(formatReviewContent(review.content))
 
     if (review.author_details.avatar_path) {
-        $(card).find('img').first().attr('src', getReviewAvatarPath(review))
-        $(card).find('img').first().removeClass('hidden')
+        $(card)
+            .find('.avatar')
+            .first()
+            .css('background-image', `url(${getReviewAvatarPath(review)})`)
+            .removeClass('hidden')
     } else {
-        hideInfo($(card).find('img').first())
+        hideInfo($(card).find('.avatar').first())
     }
 
     $(card).find('.card-title').first().text(getAuthorAndRatingString(review))
 
     let creationDate = new Date(review.created_at)
     $(card).find('.card-subtitle').first().text(creationDate.toLocaleString())
+}
+
+function getReviewAvatar(review) {
+    let img = $(document.createElement('div')).addClass(
+        'avatar rounded-circle m-1'
+    )
+    $(img).css('background-image', `url(${getReviewAvatarPath(review)})`)
+
+    return img
 }
 function getReviewAvatarPath(review) {
     if (!review.author_details.avatar_path) {
@@ -264,10 +276,11 @@ function getReviewAvatarPath(review) {
             avatarPath = avatarPath.slice(1, avatarPath.length)
         }
     } else {
-        avatarPath = `https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`
+        avatarPath = `https://image.tmdb.org/t/p/w500${review.author_details.avatar_path}`
     }
     return avatarPath
 }
+
 function getAuthorAndRatingString(review) {
     if (review.author_details.rating) {
         return `${review.author_details.rating} by ${review.author}`

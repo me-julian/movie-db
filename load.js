@@ -370,6 +370,8 @@ function addDetailsViewListeners() {
         )
         moviesCarousel.pause()
         actorsCarousel.pause()
+
+        toggleInitViewVisiblity()
     })
 
     $('#info-collapse').on('hidden.bs.collapse', resetInfoDetails)
@@ -382,7 +384,17 @@ function addDetailsViewListeners() {
         )
         moviesCarousel.cycle()
         actorsCarousel.cycle()
+
+        toggleInitViewVisiblity()
     })
+}
+function toggleInitViewVisiblity() {
+    $('#init-view').animate(
+        {
+            height: 'toggle',
+        },
+        350
+    )
 }
 
 function addReviewPageListeners(API) {

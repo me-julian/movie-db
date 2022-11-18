@@ -20,33 +20,50 @@
     />
     <!-- CSS -->
     <link rel="stylesheet" href="./css/base.css" />
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"
+    />
   </head>
   <body>
-    <nav id="nav-bar">
-      <a href="./index.html">My Movie DB</a>
+    <nav
+      id="nav-bar"
+      class="navbar-dark d-flex justify-content-center align-items-center"
+    >
+      <h1>MovieDB</h1>
     </nav>
     <main class="container-fluid px-0">
-      <section
-        class="position-absolute container-fluid collapse"
-        id="info-collapse"
-      >
-        <button
-          type="button"
-          class="btn-close ms-auto"
-          aria-label="Close"
-          data-bs-toggle="collapse"
-          data-bs-target="#info-collapse"
-        ></button>
+      <section class="container-fluid collapse" id="info-collapse">
+        <div class="position-relative container d-flex justify-content-end">
+          <button
+            type="button"
+            class="position-absolute mt-4 btn btn-back fs-5"
+            aria-label="Close"
+            data-bs-toggle="collapse"
+            data-bs-target="#info-collapse"
+          >
+            Return <i class="bi bi-arrow-return-left"></i>
+          </button>
+        </div>
         <div id="movie-details" class="container hidden">
+          <div class="text-center mt-4">
+            <h2 id="title"></h2>
+            <h5 id="original-title"></h5>
+          </div>
           <div class="d-flex">
-            <div class="col-3 d-flex flex-column align-items-center">
-              <div>
-                <h2 id="title"></h2>
-                <h4 id="original-title"></h4>
+            <div
+              class="position-relative col-3 d-flex flex-column align-items-center"
+            >
+              <div
+                id="rating-wrapper"
+                class="position-absolute d-flex justify-content-center align-items-center rounded-circle"
+              >
+                <h3 id="rating" class="fw-bolder"></h3>
+                <i class="position-absolute bi text-warning bi-star-fill"></i>
               </div>
-              <h3 id="rating"></h3>
-              <img id="poster" class="rounded img-fluid" src="" />
-              <ul class="list-group list-group-flush">
+              <img id="poster" class="rounded w-75" src="" />
+              <ul class="list-group list-group-flush text-center">
                 <li id="genres" class="list-group-item"></li>
                 <li id="runtime" class="list-group-item"></li>
                 <li id="production-countries" class="list-group-item"></li>
@@ -59,7 +76,7 @@
               <h5 id="release-date"></h5>
               <p id="overview" class=""></p>
               <div>
-                <h5>Credits</h5>
+                <h5>Cast</h5>
                 <ul id="movie-credits" class="row row-cols-2"></ul>
               </div>
             </div>
@@ -83,7 +100,7 @@
           </div>
         </div>
         <div id="actor-details" class="container hidden">
-          <div class="d-flex">
+          <div class="d-flex mt-4">
             <div class="col-2">
               <img id="portrait" class="rounded" src="" />
               <div>
@@ -95,9 +112,9 @@
             </div>
             <div class="px-4">
               <h2 id="name"></h2>
-              <p id="bio" class=""></p>
-              <p id="bio-src" class="my-1 fw-light"></p>
-              <div>
+              <p id="bio" class="my-2"></p>
+              <p id="bio-src"></p>
+              <div class="mt-2">
                 <h5>Credits</h5>
                 <ul id="actor-credits" class="row row-cols-2"></ul>
               </div>
@@ -105,223 +122,225 @@
           </div>
         </div>
       </section>
-      <section
-        id="upcoming"
-        class="container row justify-content-center mx-auto my-auto text-center"
-      >
-        <div
-          id="movies-carousel"
-          class="pe-none carousel slide col-9"
-          data-bs-ride="carousel"
-          data-bs-pause="false"
+      <div id="init-view">
+        <section
+          id="upcoming"
+          class="container row justify-content-center mx-auto my-auto text-center"
         >
-          <h2>Upcoming Movies</h2>
-          <!-- <div class="position-absolute spinner-border text-dark" role="status">
+          <div
+            id="movies-carousel"
+            class="pe-none carousel slide col-9"
+            data-bs-ride="carousel"
+            data-bs-pause="false"
+          >
+            <h2>Upcoming Movies</h2>
+            <!-- <div class="position-absolute spinner-border text-dark" role="status">
             <span class="visually-hidden">Loading...</span>
           </div> -->
-          <div class="carousel-inner d-flex align-items-center h-100">
-            <div class="carousel-item active">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
+            <div class="carousel-inner d-flex align-items-center h-100">
+              <div class="carousel-item active">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="pe-auto col-md-3">
+                  <div class="card">
+                    <div class="card-img">
+                      <img src="" class="img-fluid rounded" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div class="pe-auto col-md-3">
-                <div class="card">
-                  <div class="card-img">
-                    <img src="" class="img-fluid rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <button
+              class="pe-auto carousel-control-prev"
+              type="button"
+              data-bs-target="#movies-carousel"
+              data-bs-slide="prev"
+            >
+              <span class="visually-hidden">Previous Upcoming Movie</span>
+            </button>
+            <button
+              class="pe-auto carousel-control-next"
+              type="button"
+              data-bs-target="#movies-carousel"
+              data-bs-slide="next"
+            >
+              <span class="visually-hidden">Next Upcoming Movie</span>
+            </button>
           </div>
-          <button
-            class="pe-auto carousel-control-prev"
-            type="button"
-            data-bs-target="#movies-carousel"
-            data-bs-slide="prev"
+          <div
+            id="actors-carousel"
+            class="col-3 carousel slide"
+            data-bs-ride="carousel"
+            data-bs-pause="false"
           >
-            <span class="visually-hidden">Previous Upcoming Movie</span>
-          </button>
-          <button
-            class="pe-auto carousel-control-next"
-            type="button"
-            data-bs-target="#movies-carousel"
-            data-bs-slide="next"
-          >
-            <span class="visually-hidden">Next Upcoming Movie</span>
-          </button>
-        </div>
-        <div
-          id="actors-carousel"
-          class="col-3 carousel slide"
-          data-bs-ride="carousel"
-          data-bs-pause="false"
-        >
-          <!-- Removing data-bs-pause="false" from
+            <!-- Removing data-bs-pause="false" from
           carousels seems to break current pausing
           functionality -->
-          <h4>Featuring Actors</h4>
-          <div class="carousel-inner"></div>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-bs-target="#actors-carousel"
-            data-bs-slide="prev"
-          >
-            <span class="visually-hidden">Previous Actor</span>
-          </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#actors-carousel"
-            data-bs-slide="next"
-          >
-            <span class="visually-hidden">Next Actor</span>
-          </button>
-        </div>
-      </section>
-      <section id="top-ten" class="container mx-auto py-5 text-center">
-        <h3>Top Rated</h3>
-        <div class="row row-cols-md-5 text-light">
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay pt-0">
-              <h5 class="card-title py-2 dark-bg-transp mx-auto w-25">#1</h5>
+            <h4>Featuring Actors</h4>
+            <div class="carousel-inner"></div>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#actors-carousel"
+              data-bs-slide="prev"
+            >
+              <span class="visually-hidden">Previous Actor</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#actors-carousel"
+              data-bs-slide="next"
+            >
+              <span class="visually-hidden">Next Actor</span>
+            </button>
+          </div>
+        </section>
+        <section id="top-ten" class="container mx-auto py-5 text-center">
+          <h3>Top Rated</h3>
+          <div class="row row-cols-md-5 text-light">
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay pt-0">
+                <h5 class="card-title py-2 dark-bg-transp mx-auto w-25">#1</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#2</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#3</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#4</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#5</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#6</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#7</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#8</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#9</h5>
+              </div>
+            </div>
+            <div class="card col border-0">
+              <img src="" class="card-img" alt="..." />
+              <div class="card-img-overlay">
+                <h5 class="card-title">#10</h5>
+              </div>
             </div>
           </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#2</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#3</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#4</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#5</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#6</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#7</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#8</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#9</h5>
-            </div>
-          </div>
-          <div class="card col border-0">
-            <img src="" class="card-img" alt="..." />
-            <div class="card-img-overlay">
-              <h5 class="card-title">#10</h5>
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
     <footer class="bg-dark text-white px-5 py-3">
       <div id="'test">

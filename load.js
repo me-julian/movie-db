@@ -202,6 +202,8 @@ function removeDuplicateCast(actors) {
     for (let movie in actors) {
         selectedActors[movie] = []
         for (let actor of actors[movie]) {
+            // ISSUE: Once loaded page and there were 10 actor carousel
+            // items from one movie. Reloaded and it was normal again.
             if (selectedActors[movie].length >= 3) {
                 break
             } else {
@@ -412,8 +414,9 @@ function resetInfoDetails() {
     // Reset reviews & their pagination
     $('#current-review').children().remove()
     $('#reviews nav .page-set').remove()
-    // Reset actor credits
-    $('#actor-details #credits').children().remove()
+    // Reset actor & movie detail credits
+    $('#actor-credits').children().remove()
+    $('#movie-credits').children().remove()
 }
 
 $('#testButton').on('click', () => {

@@ -86,6 +86,8 @@ function populateMovieDetails(movie) {
 
     populateMovieDetailsMisc(movie)
 
+    populateMovieDetailsCast(movie)
+
     populateMovieDetailsReviews(movie)
 
     completed.resolve()
@@ -140,6 +142,38 @@ function populateMovieDetailsMisc(movie) {
     } else {
         hideInfo($('#revenue'))
     }
+}
+
+function populateMovieDetailsCast(movie) {
+    const container = $('#movie-credits')
+    const cast = movie.credits.cast.sort(sortCastOrder)
+    for (let credit of cast) {
+        container.append(
+            $(document.createElement('li'))
+                .addClass('d-flex align-items-center cast-credit')
+                .attr('data-actor-id', credit.id)
+                .html(getCastCreditString(credit))
+        )
+    }
+}
+function sortCastOrder(a, b) {
+    let orderDiff = a.order - b.order
+    if (orderDiff === 0) {
+        return a.popularity - b.popularity
+    } else {
+        return orderDiff
+    }
+}
+function getCastCreditString(credit) {
+    let charStr
+    if (credit.character) {
+        charStr = credit.character
+    } else {
+        charStr = 'Unnamed'
+    }
+    const character = `<p class="my-0">${charStr}</p>`
+    const actor = `<p class="my-0 ms-auto justify-self-end">${credit.name}</p>`
+    return character + actor
 }
 
 function populateMovieDetailsReviews(movie) {

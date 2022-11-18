@@ -102,7 +102,7 @@ function setBiographyString(bio) {
 }
 
 function populateActorCredits(credits) {
-    const container = $('#actor-details #credits')
+    const container = $('#actor-details #actor-credits')
     credits = credits.sort(sortCreditDate)
     for (let credit of credits) {
         if (credit.character) {
@@ -110,7 +110,7 @@ function populateActorCredits(credits) {
                 $(document.createElement('li'))
                     .addClass('d-flex align-items-center cast-credit')
                     .attr('data-movie-id', credit.id)
-                    .html(getCastCreditString(credit))
+                    .html(getActorCreditString(credit))
             )
         } else {
             continue
@@ -128,7 +128,7 @@ function sortCreditDate(a, b) {
         return bDate - aDate
     }
 }
-function getCastCreditString(credit) {
+function getActorCreditString(credit) {
     const character = `<div><p class="my-0">${credit.character}</p>`
     const title = `<p class="my-0 fst-italic">${credit.title}</p6></div>`
     let release

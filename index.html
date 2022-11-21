@@ -29,9 +29,9 @@
   <body>
     <nav
       id="nav-bar"
-      class="navbar-dark d-flex justify-content-center align-items-center"
+      class="navbar-dark d-flex justify-content-start align-items-center"
     >
-      <h1>MovieDB</h1>
+      <h1 class="ms-4">MovieDB</h1>
     </nav>
     <main class="container-fluid px-0">
       <section class="container-fluid collapse" id="info-collapse">
@@ -125,19 +125,19 @@
       <div id="init-view">
         <section
           id="upcoming"
-          class="container row justify-content-center mx-auto my-auto text-center"
+          class="container row justify-content-center mx-auto my-auto text-center px-0 mb-2"
         >
           <div
             id="movies-carousel"
-            class="pe-none carousel slide col-9"
+            class="pe-none carousel slide col-9 border-end pb-2"
             data-bs-ride="carousel"
             data-bs-pause="false"
           >
-            <h2>Upcoming Movies</h2>
+            <h2 class="pb-3">Upcoming Movies</h2>
             <!-- <div class="position-absolute spinner-border text-dark" role="status">
             <span class="visually-hidden">Loading...</span>
           </div> -->
-            <div class="carousel-inner d-flex align-items-center h-100">
+            <div class="carousel-inner pb-4">
               <div class="carousel-item active">
                 <div class="pe-auto col-md-3">
                   <div class="card">
@@ -234,7 +234,9 @@
               type="button"
               data-bs-target="#movies-carousel"
               data-bs-slide="prev"
+              onclick="this.blur();"
             >
+              <i class="bi bi-caret-left-fill"></i>
               <span class="visually-hidden">Previous Upcoming Movie</span>
             </button>
             <button
@@ -242,101 +244,75 @@
               type="button"
               data-bs-target="#movies-carousel"
               data-bs-slide="next"
+              onclick="this.blur();"
             >
+              <i class="bi bi-caret-right-fill"></i>
               <span class="visually-hidden">Next Upcoming Movie</span>
             </button>
           </div>
-          <div
-            id="actors-carousel"
-            class="col-3 carousel slide"
-            data-bs-ride="carousel"
-            data-bs-pause="false"
-          >
-            <!-- Removing data-bs-pause="false" from
+          <div class="col-2 d-flex flex-column justify-content-center">
+            <h4 class="pt-2 pb-3">Featuring Actors</h4>
+            <div
+              id="actors-carousel"
+              class="carousel slide"
+              data-bs-ride="carousel"
+              data-bs-pause="false"
+            >
+              <!-- Removing data-bs-pause="false" from
           carousels seems to break current pausing
           functionality -->
-            <h4>Featuring Actors</h4>
-            <div class="carousel-inner"></div>
-            <button
-              class="carousel-control-prev"
-              type="button"
-              data-bs-target="#actors-carousel"
-              data-bs-slide="prev"
-            >
-              <span class="visually-hidden">Previous Actor</span>
-            </button>
-            <button
-              class="carousel-control-next"
-              type="button"
-              data-bs-target="#actors-carousel"
-              data-bs-slide="next"
-            >
-              <span class="visually-hidden">Next Actor</span>
-            </button>
+              <div class="carousel-inner"></div>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#actors-carousel"
+                data-bs-slide="prev"
+              >
+                <span class="visually-hidden">Previous Actor</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#actors-carousel"
+                data-bs-slide="next"
+              >
+                <span class="visually-hidden">Next Actor</span>
+              </button>
+            </div>
           </div>
         </section>
-        <section id="top-ten" class="container mx-auto py-5 text-center">
-          <h3>Top Rated</h3>
-          <div class="row row-cols-md-5 text-light">
+        <section id="top-ten" class="container mx-auto pb-4 text-center">
+          <h3 class="pb-2">Top Rated</h3>
+          <div class="row row-cols-md-5 gy-4 text-light">
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay pt-0">
-                <h5 class="card-title py-2 dark-bg-transp mx-auto w-25">#1</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#2</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#3</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#4</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#5</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#6</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#7</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#8</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#9</h5>
-              </div>
             </div>
             <div class="card col border-0">
               <img src="" class="card-img" alt="..." />
-              <div class="card-img-overlay">
-                <h5 class="card-title">#10</h5>
-              </div>
             </div>
           </div>
         </section>
@@ -345,7 +321,7 @@
     <footer class="bg-dark text-white px-5 py-3">
       <div id="'test">
         <button class="btn btn-primary" id="testButton">
-          Open Avengers Page (Multi-page review test)
+          Open Avengers Page (Multiple pages of reviews example)
         </button>
       </div>
       <span

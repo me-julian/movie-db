@@ -80,7 +80,7 @@ function populateMovieDetails(movie) {
         $('#rating').text(movie.vote_average.toFixed(1))
     } else {
         $('#release-date').text(`Coming ${movie.release_date.slice(0, 4)}`)
-        $('#rating').addClass('hidden').text('')
+        $('#rating-wrapper').addClass('hidden')
     }
     $('#overview').text(movie.overview)
 
@@ -209,12 +209,12 @@ function createReviewElement(review) {
 
     let infoText = $(document.createElement('div'))
     let author = $(document.createElement('h5'))
-        .addClass('card-title')
+        .addClass('card-title fw-normal')
         .text(getAuthorAndRatingString(review))
 
     let creationDate = new Date(review.created_at)
     let date = $(document.createElement('h6'))
-        .addClass('card-subtitle')
+        .addClass('card-subtitle fw-normal')
         .text(creationDate.toLocaleString())
 
     infoText.append(author, date)
@@ -283,7 +283,7 @@ function getReviewAvatarPath(review) {
 
 function getAuthorAndRatingString(review) {
     if (review.author_details.rating) {
-        return `${review.author_details.rating} by ${review.author}`
+        return `Rated ${review.author_details.rating} by ${review.author}`
     } else {
         return `${review.author}`
     }

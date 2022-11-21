@@ -241,10 +241,10 @@ function buildActorCarouselItems(actors) {
     }
 }
 function createActorCarouselItem(actor, movieId) {
-    let item = $('<div></div>').addClass('carousel-item')
+    let item = $('<div></div>').addClass('carousel-item actor')
     $(item).attr('data-movie-id', movieId)
     $(item).attr('data-actor-id', actor.id)
-    let img = $('<img></img>').addClass('d-block mx-auto img-fluid')
+    let img = $('<img></img>').addClass('d-block mx-auto img-fluid rounded')
     $(img).attr(
         'src',
         `https://image.tmdb.org/t/p/original${actor.profile_path}`

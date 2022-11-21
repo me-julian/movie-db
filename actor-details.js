@@ -130,7 +130,7 @@ function sortCreditDate(a, b) {
 }
 function getActorCreditString(credit) {
     const character = `<div><p class="my-0">${credit.character}</p>`
-    const title = `<p class="my-0 fst-italic">${credit.title}</p6></div>`
+    const title = `<p class="my-0 fst-italic lh-sm">${credit.title}</p6></div>`
     let release
     if (credit.release_date) {
         release = credit.release_date.substr(0, 4)

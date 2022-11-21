@@ -1,5 +1,6 @@
 :root {
     --col-dark: #020122;
+    --col-dark-transp: rgba(0, 0, 0, 0.652);
     --col-white: #ffff;
     --col-middle: #798071;
     --col-bright: #296eb4;
@@ -9,7 +10,6 @@
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 #nav-bar {
@@ -22,11 +22,11 @@ body {
     margin-block-end: 0px;
 }
 
-#movies-carousel {
+#upcoming {
     background-color: #dcd5d5;
 }
-#actors-carousel {
-    background-color: #7c7373;
+#actors-carousel .actor > img {
+    width: 75%;
 }
 
 /* Details Collapse General */
@@ -49,6 +49,21 @@ body {
     color: var(--col-white) !important;
 }
 
+/* Carousels */
+#movies-carousel .carousel-control-prev,
+#movies-carousel .carousel-control-next {
+    width: 12.5%;
+    color: var(--col-dark);
+    font-size: 2em;
+}
+
+#movies-carousel .carousel-control-prev:focus,
+#movies-carousel .carousel-control-next:focus {
+    text-decoration: none;
+    outline: 0;
+    opacity: 0.5;
+}
+
 /* Details - Movies */
 #original-title {
     font-weight: lighter;
@@ -64,9 +79,12 @@ body {
     box-shadow: var(--col-dark) 1px 1px 5px;
 }
 #rating-wrapper > i {
-    color: var(--col-middle);
     z-index: -1;
-    font-size: 70px;
+    font-size: 71px;
+    line-height: 0px;
+}
+#rating-wrapper > i::before {
+    vertical-align: 0.5em;
 }
 
 #rating {
@@ -99,6 +117,10 @@ ul {
     display: flex;
 }
 
+#reviews ul.pagination > div.page-set > .page-item > a {
+    border-radius: 0px !important;
+}
+
 #current-review .card-text {
     max-height: 10em;
 }
@@ -128,12 +150,17 @@ ul {
 }
 
 /* Misc */
+.carousel-item img,
+#top-ten .card-img {
+    cursor: pointer;
+}
+
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .dark-bg-transp {
-    background-color: rgba(0, 0, 0, 0.652);
+    background-color: var(--col-dark-transp);
 }
 
 /* Multi-Slide Movie Carousel */
@@ -146,12 +173,21 @@ ul {
     }
 }
 
+#movies-carousel .carousel-inner {
+    width: 80%;
+    margin: auto;
+}
+
 #movies-carousel .carousel-item.active,
 #movies-carousel .carousel-item-next,
 #movies-carousel .carousel-item-prev {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+#movies-carousel .carousel-item > div {
+    width: 30% !important;
 }
 
 @media (min-width: 768px) {

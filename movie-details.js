@@ -150,7 +150,7 @@ function populateMovieDetailsCast(movie) {
     for (let credit of cast) {
         container.append(
             $(document.createElement('li'))
-                .addClass('d-flex align-items-center cast-credit')
+                .addClass('d-flex align-items-start cast-credit')
                 .attr('data-actor-id', credit.id)
                 .html(getCastCreditString(credit))
         )
@@ -171,8 +171,8 @@ function getCastCreditString(credit) {
     } else {
         charStr = 'Unnamed'
     }
-    const character = `<p class="my-0">${charStr}</p>`
-    const actor = `<p class="my-0 ms-auto justify-self-end">${credit.name}</p>`
+    const character = `<p class="my-0 me-4 text-start">${charStr}</p>`
+    const actor = `<p class="my-0 ms-auto justify-self-end text-end">${credit.name}</p>`
     return character + actor
 }
 
@@ -207,7 +207,7 @@ function createReviewElement(review) {
 
     let info = $(document.createElement('div')).addClass('review-info')
 
-    let infoText = $(document.createElement('div'))
+    let infoText = $(document.createElement('div')).addClass('ms-2')
     let author = $(document.createElement('h5'))
         .addClass('card-title fw-normal')
         .text(getAuthorAndRatingString(review))

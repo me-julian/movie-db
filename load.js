@@ -395,6 +395,7 @@ function toggleInitViewVisiblity() {
         },
         350
     )
+    document.body.scrollTop = document.documentElement.scrollTop = 0
 }
 
 function addReviewPageListeners(API) {
@@ -431,14 +432,14 @@ function resetInfoDetails() {
     $('#movie-credits').children().remove()
 }
 
-$('#testButton').on('click', () => {
+$('#avengers-test').on('click', () => {
     $.get({
         url: `https://api.themoviedb.org/3/movie/299534?api_key=2f53ed057a5040f94bf52c398ed4a659&language=en-US&append_to_response=credits,reviews`,
         success: (data) => {
-            $('#testButton').attr('data-id', data.id)
+            $('#avengers-test').attr('data-id', data.id)
             viewMovieDetails(
                 {key: '2f53ed057a5040f94bf52c398ed4a659'},
-                $('#testButton')
+                $('#avengers-test')
             )
         },
     })

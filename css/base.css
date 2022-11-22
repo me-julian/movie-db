@@ -8,10 +8,6 @@
     --col-attention-active: #c0190d;
 }
 
-body {
-    margin: 0;
-}
-
 #nav-bar {
     background-color: var(--col-dark);
     color: var(--col-white);
@@ -22,8 +18,15 @@ body {
     margin-block-end: 0px;
 }
 
-#upcoming {
+#content-wrapper {
+    min-height: 100vh;
+}
+
+#upcoming > div {
     background-color: #dcd5d5;
+}
+#movies-carousel {
+    border-right: var(--col-white) solid 2px;
 }
 #actors-carousel .actor > img {
     width: 75%;
@@ -39,6 +42,7 @@ body {
     font-weight: 400;
     background-color: var(--col-attention);
     color: var(--col-white);
+    box-shadow: #000 1px 1px 3px;
 }
 .btn-back:hover {
     background-color: var(--col-attention-active);
@@ -70,12 +74,12 @@ body {
 }
 
 #rating-wrapper {
-    background-color: var(--col-bright);
+    background-color: var(--col-dark);
     color: var(--col-white);
     height: 75px;
     width: 75px;
-    left: 50%;
-    transform: translate(110%, -50%);
+    left: 100%;
+    transform: translate(-100%);
     box-shadow: var(--col-dark) 1px 1px 5px;
 }
 #rating-wrapper > i {
@@ -131,6 +135,7 @@ ul {
     background-size: contain;
     width: 75px;
     height: 75px;
+    box-shadow: var(--col-middle) 1px 1px 3px;
 }
 
 /* Details - Actors */
@@ -155,6 +160,10 @@ ul {
     cursor: pointer;
 }
 
+footer h5 {
+    margin-block-end: 0px;
+}
+
 .hidden {
     display: none !important;
 }
@@ -173,11 +182,6 @@ ul {
     }
 }
 
-#movies-carousel .carousel-inner {
-    width: 80%;
-    margin: auto;
-}
-
 #movies-carousel .carousel-item.active,
 #movies-carousel .carousel-item-next,
 #movies-carousel .carousel-item-prev {
@@ -186,8 +190,9 @@ ul {
     align-items: center;
 }
 
-#movies-carousel .carousel-item > div {
-    width: 30% !important;
+#movies-carousel .carousel-inner {
+    width: 80%;
+    margin: auto;
 }
 
 @media (min-width: 768px) {
@@ -200,6 +205,10 @@ ul {
     #movies-carousel .carousel-item-prev {
         transform: translateX(-33%);
     }
+
+    #movies-carousel .carousel-item > div {
+        width: 30% !important;
+    }
 }
 
 #movies-carousel .carousel-item-end,
@@ -207,3 +216,43 @@ ul {
     transform: translateX(0);
 }
 /* End Multi-Slide Movie Carousel */
+
+@media (max-width: 1199px) {
+    #rating-wrapper {
+        height: 65px;
+        width: 65px;
+        transform: translate(-85%);
+    }
+    #rating-wrapper > i {
+        font-size: 61px;
+    }
+}
+
+@media (max-width: 767px) {
+    #upcoming {
+        background-color: #dcd5d5;
+    }
+}
+
+@media (max-width: 576px) {
+    .btn-back {
+        position: fixed !important;
+        top: 1rem;
+        z-index: 1001;
+    }
+
+    #rating-wrapper {
+        transform: translate(-150%);
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 499px) {
+    #reviews div.page-set {
+        display: none;
+    }
+}

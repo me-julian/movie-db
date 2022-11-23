@@ -198,12 +198,13 @@ function createReviewElement(review) {
 
     let cardBody = $(document.createElement('div')).addClass('card-body')
 
-    // Currently scrolling as default, fairly small.
-    // Probably would be nicer to shorten and add a 'read more'
-    // with a simple modal screen.
     let body = $(document.createElement('p'))
-        .addClass('card-text overflow-auto')
+        .addClass('card-text clamp')
         .append(formatReviewContent(review.content))
+    let bodyCollapse = $(document.createElement('a'))
+        .text('Read More')
+        .addClass('clamp-toggle')
+        .attr('id', 'toggle-review')
 
     let info = $(document.createElement('div')).addClass('review-info')
 
@@ -227,7 +228,7 @@ function createReviewElement(review) {
     }
 
     info.append(infoText)
-    card.append(cardBody.append(body, info))
+    card.append(cardBody.append(body, bodyCollapse, info))
     return card
 }
 
@@ -238,7 +239,11 @@ function updateReviewElement(review) {
     $(card).attr('data-author-username', review.author_details.username)
 
     $(card).find('.card-text').children().remove()
-    $(card).find('.card-text').append(formatReviewContent(review.content))
+    $(card)
+        .find('.card-text')
+        .removeClass('show-clamp')
+        .append(formatReviewContent(review.content))
+    $('#toggle-review').text('Show More')
 
     if (review.author_details.avatar_path) {
         $(card)
@@ -429,6 +434,11 @@ function changeReviewPage(li) {
 
     checkPrevBtnStatus()
     checkNextBtnStatus()
+
+    showToggleIfClamped(
+        $('#current-review .clamp'),
+        $('#current-review .clamp-toggle')
+    )
 }
 
 function checkNextBtnStatus(

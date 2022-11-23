@@ -100,6 +100,21 @@ ul {
     padding-inline-start: 0;
 }
 
+@media (max-width: 991.5px) {
+    #movie-credits > li:nth-child(odd) {
+        background-color: #eeeeee;
+    }
+}
+@media (min-width: 992px) {
+    #movie-credits > li:nth-child(odd) {
+        border-right: var(--col-middle) solid 2px;
+    }
+    #movie-credits > li:nth-child(4n - 1),
+    #movie-credits > li:nth-child(4n) {
+        background-color: #eeeeee;
+    }
+}
+
 #reviews .page-item {
     cursor: pointer;
 }
@@ -125,8 +140,27 @@ ul {
     border-radius: 0px !important;
 }
 
-#current-review .card-text {
-    max-height: 10em;
+.clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+#current-review .card-text.clamp {
+    -webkit-line-clamp: 3;
+}
+
+.show-clamp {
+    -webkit-line-clamp: unset !important;
+    overflow: auto !important;
+}
+
+#toggle-review {
+    cursor: pointer;
+    color: #296eb4;
+}
+#toggle-review:hover {
+    color: #1f5891;
 }
 
 .avatar {
@@ -209,11 +243,11 @@ footer h5 {
     #movies-carousel .carousel-item > div {
         width: 30% !important;
     }
-}
 
-#movies-carousel .carousel-item-end,
-#movies-carousel .carousel-item-start {
-    transform: translateX(0);
+    #movies-carousel .carousel-item-end,
+    #movies-carousel .carousel-item-start {
+        transform: translateX(0);
+    }
 }
 /* End Multi-Slide Movie Carousel */
 

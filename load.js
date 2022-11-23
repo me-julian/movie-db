@@ -387,6 +387,8 @@ function addDetailsViewListeners() {
 
         toggleInitViewVisiblity()
     })
+
+    $('#info-collapse').on('shown.bs.collapse', checkReviewClamp)
 }
 function toggleInitViewVisiblity() {
     $('#init-view').animate(
@@ -415,6 +417,44 @@ function addReviewPageListeners(API) {
     $('#reviews nav').on('click', '.control', function (event) {
         incrementReview(event.currentTarget)
     })
+
+    addReviewClampListener()
+}
+
+function addReviewClampListener() {
+    $('#current-review').on('click', '#toggle-review', toggleReviewClamp)
+}
+function toggleReviewClamp() {
+    console.log('show')
+    let reviewText = $('#current-review .card-text')
+    if ($(reviewText).hasClass('show-clamp')) {
+        $(reviewText).removeClass('show-clamp')
+        $('#toggle-review').text('Show More')
+    } else {
+        $(reviewText).addClass('show-clamp')
+        $('#toggle-review').text('Show Less')
+    }
+
+    addClampToggleListeners()
+}
+
+function addClampToggleListeners() {
+    $('#document').on('resize', checkReviewClamp)
+}
+function checkReviewClamp() {
+    let clamped = $('.clamp')
+    let toggle = $(clamped).next('.clamp-toggle')
+    showToggleIfClamped(clamped, toggle)
+}
+
+function showToggleIfClamped(clamped, toggle) {
+    const noClamp = $(clamped)[0].scrollHeight === $(clamped)[0].clientHeight
+    if (noClamp) {
+        $(toggle).addClass('hidden')
+        $(clamped).addClass('show-clamp')
+    } else {
+        $(toggle).removeClass('hidden')
+    }
 }
 
 function resetInfoDetails() {

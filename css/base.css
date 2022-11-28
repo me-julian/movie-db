@@ -28,9 +28,6 @@
 #movies-carousel {
     border-right: var(--col-white) solid 2px;
 }
-#actors-carousel .actor > img {
-    width: 75%;
-}
 
 /* Details Collapse General */
 #info-collapse {
@@ -140,7 +137,7 @@ ul {
     border-radius: 0px !important;
 }
 
-.clamp {
+.line-clamp {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -148,13 +145,23 @@ ul {
     margin-block: 0;
 }
 
-#current-review .card-text.clamp {
+#current-review .card-text.line-clamp {
     -webkit-line-clamp: 3;
+}
+
+#movie-credits.box-clamp {
+    overflow: hidden;
+    max-height: 350px;
+    -webkit-mask-image: linear-gradient(to top, transparent 10%, black 50%);
+    mask-image: linear-gradient(to top, transparent 10%, black 50%);
 }
 
 .show-clamp {
     -webkit-line-clamp: unset !important;
     overflow: hidden !important;
+    max-height: none !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
 }
 
 #toggle-review {
@@ -209,12 +216,16 @@ footer h5 {
 }
 
 /* Multi-Slide Movie Carousel */
-@media (max-width: 767px) {
+@media (max-width: 767.5px) {
     #movies-carousel .carousel-item > div {
         display: none;
     }
     #movies-carousel .carousel-item > div:first-child {
         display: block;
+    }
+
+    #upcoming {
+        background-color: #dcd5d5;
     }
 }
 
@@ -250,6 +261,10 @@ footer h5 {
     #movies-carousel .carousel-item-start {
         transform: translateX(0);
     }
+
+    #actors-carousel .actor > img {
+        width: 75%;
+    }
 }
 /* End Multi-Slide Movie Carousel */
 
@@ -261,12 +276,6 @@ footer h5 {
     }
     #rating-wrapper > i {
         font-size: 61px;
-    }
-}
-
-@media (max-width: 767px) {
-    #upcoming {
-        background-color: #dcd5d5;
     }
 }
 
@@ -284,6 +293,10 @@ footer h5 {
     .avatar {
         width: 50px;
         height: 50px;
+    }
+
+    #actors-carousel .actor > img {
+        width: 75%;
     }
 }
 

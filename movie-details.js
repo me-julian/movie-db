@@ -199,7 +199,8 @@ function createReviewElement(review) {
     let cardBody = $(document.createElement('div')).addClass('card-body')
 
     let body = $(document.createElement('p'))
-        .addClass('card-text clamp')
+        .addClass('card-text line-clamp')
+        .attr('data-clamp-height', 72 + 16)
         .append(formatReviewContent(review.content))
     let bodyCollapse = $(document.createElement('a'))
         .text('Read More')
@@ -260,8 +261,8 @@ function updateReviewElement(review) {
     let creationDate = new Date(review.created_at)
     $(card).find('.card-subtitle').first().text(creationDate.toLocaleString())
 
-    showToggleIfClamped(
-        $('#current-review .clamp'),
+    updateLineClamping(
+        $('#current-review .line-clamp'),
         $('#current-review .clamp-toggle')
     )
 }

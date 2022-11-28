@@ -388,7 +388,7 @@ function addDetailsViewListeners() {
         toggleInitViewVisiblity()
     })
 
-    $('#info-collapse').on('shown.bs.collapse', checkReviewClamp)
+    $('#info-collapse').on('shown.bs.collapse', updateClampedElements)
 }
 function toggleInitViewVisiblity() {
     $('#init-view').animate(
@@ -418,13 +418,33 @@ function addReviewPageListeners(API) {
         incrementReview(event.currentTarget)
     })
 
-    addReviewClampListener()
-}
-
-function addReviewClampListener() {
-    $('#current-review').on('click', '#toggle-review', toggleReviewClamp)
     addClampToggleListeners()
 }
+
+function addClampToggleListeners() {
+    window.addEventListener('resize', updateClampedElements)
+
+    $('#current-review').on('click', '#toggle-review', toggleReviewClamp)
+    $('#movie-details').on(
+        'click',
+        '#toggle-movie-credits',
+        toggleMovieCreditsClamp
+    )
+}
+function updateClampedElements() {
+    let lineClamps = $('.line-clamp')
+    lineClamps.each((i, lineClamp) => {
+        let toggle = $(lineClamp).next('.clamp-toggle')
+        updateLineClamping(lineClamp, toggle)
+    })
+
+    let boxClamps = $('.box-clamp')
+    boxClamps.each((i, boxClamp) => {
+        let toggle = $(boxClamp).next('.clamp-toggle')
+        updateBoxClamping(boxClamp, toggle)
+    })
+}
+
 function toggleReviewClamp() {
     let reviewText = $('#current-review .card-text')
     if ($(reviewText).hasClass('show-clamp')) {
@@ -435,26 +455,41 @@ function toggleReviewClamp() {
         $('#toggle-review').text('Show Less')
     }
 }
-
-function addClampToggleListeners() {
-    window.addEventListener('resize', checkReviewClamp)
-}
-function checkReviewClamp() {
-    let clamped = $('.clamp')
-    for (let clamp of clamped) {
-        let toggle = $(clamp).next('.clamp-toggle')
-        showToggleIfClamped(clamp, toggle)
+function toggleMovieCreditsClamp() {
+    let credits = $('#movie-credits')
+    if ($(credits).hasClass('show-clamp')) {
+        $(credits).removeClass('show-clamp')
+        $('#toggle-movie-credits').text('Show More')
+    } else {
+        $(credits).addClass('show-clamp')
+        $('#toggle-movie-credits').text('Show Less')
     }
 }
 
-function showToggleIfClamped(clamp, toggle) {
-    // 3 * line height + margin bottom 1rem from at least one <p>
-    const noClamp = $(clamp)[0].scrollHeight <= 72 + 16
+function updateLineClamping(clamp, toggle) {
+    // # of clamped lines * line height + margin bottom 1rem from at least one <p> child el
+    const noClamp =
+        $(clamp)[0].scrollHeight <= parseInt($(clamp).attr('data-clamp-height'))
 
     if (noClamp) {
         if ($(clamp).not('.show-clamp')) {
             $(toggle).addClass('hidden')
         }
+    } else {
+        if ($(clamp).hasClass('show-clamp')) {
+            $(toggle).removeClass('hidden')
+        } else {
+            $(toggle).removeClass('hidden')
+            $(clamp).removeClass('show-clamp')
+        }
+    }
+}
+function updateBoxClamping(clamp, toggle, clampHeight) {
+    const noClamp =
+        $(clamp)[0].scrollHeight <= parseInt($(clamp).attr('data-clamp-height'))
+    if (noClamp) {
+        $(clamp).addClass('show-clamp')
+        $(toggle).addClass('hidden')
     } else {
         if ($(clamp).hasClass('show-clamp')) {
             $(toggle).removeClass('hidden')
@@ -478,6 +513,9 @@ function resetInfoDetails() {
     // Reset actor & movie detail credits
     $('#actor-credits').children().remove()
     $('#movie-credits').children().remove()
+    // Reset clamped items
+    $('.show-clamp').removeClass('show-clamp')
+    $('.clamp-toggle').text('Show More')
 }
 
 $('#avengers-test').on('click', () => {

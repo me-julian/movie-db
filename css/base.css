@@ -98,18 +98,26 @@ ul {
 }
 
 @media (max-width: 991.5px) {
-    #movie-credits > li:nth-child(odd) {
+    #movie-credits > li:nth-child(odd),
+    #actor-credits > li:nth-child(odd) {
         background-color: #eeeeee;
     }
 }
 @media (min-width: 992px) {
-    #movie-credits > li:nth-child(odd) {
+    #movie-credits > li:nth-child(odd),
+    #actor-credits > li:nth-child(odd) {
         border-right: var(--col-middle) solid 2px;
     }
     #movie-credits > li:nth-child(4n - 1),
-    #movie-credits > li:nth-child(4n) {
+    #movie-credits > li:nth-child(4n),
+    #actor-credits > li:nth-child(4n - 1),
+    #actor-credits > li:nth-child(4n) {
         background-color: #eeeeee;
     }
+}
+
+.cast-credit {
+    padding-bottom: 0.2rem;
 }
 
 #reviews .page-item {

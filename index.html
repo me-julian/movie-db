@@ -113,31 +113,33 @@
               </div>
             </div>
           </div>
-          <div id="actor-details" class="container hidden">
-            <div class="d-flex mt-4 mb-2 border-bottom">
-              <div class="col-2">
-                <img id="portrait" class="rounded" src="" />
-                <div>
-                  <ul class="list-group list-group-flush text-center">
-                    <li id="age" class="list-group-item"></li>
-                    <li id="p-o-b" class="list-group-item"></li>
-                  </ul>
+          <div id="actor-details" class="container-lg hidden">
+            <div class="mt-4 mb-2 border-bottom">
+              <h2 id="name" class="text-center"></h2>
+              <div class="d-flex flex-column flex-sm-row mt-3">
+                <div class="col-10 col-sm-3 col-md-2">
+                  <img id="portrait" class="rounded mx-auto" src="" />
+                  <div>
+                    <ul class="list-group list-group-flush text-center">
+                      <li id="age" class="list-group-item"></li>
+                      <li id="p-o-b" class="list-group-item"></li>
+                    </ul>
+                  </div>
                 </div>
-              </div>
-              <div class="px-4">
-                <h2 id="name"></h2>
-                <p id="bio" class="my-2"></p>
-                <p id="bio-src"></p>
-                <div class="my-2">
-                  <h5>Credits</h5>
-                  <ul
-                    id="actor-credits"
-                    class="row row-cols-2 box-clamp"
-                    data-clamp-height="300"
-                  ></ul>
-                  <a id="toggle-actor-credits" class="clamp-toggle"
-                    >Show More</a
-                  >
+                <div class="px-4">
+                  <p id="bio" class="mb-2"></p>
+                  <p id="bio-src"></p>
+                  <div class="my-2">
+                    <h5>Credits</h5>
+                    <ul
+                      id="actor-credits"
+                      class="row row-cols-1 row-cols-lg-2 box-clamp"
+                      data-clamp-height="300"
+                    ></ul>
+                    <a id="toggle-actor-credits" class="clamp-toggle"
+                      >Show More</a
+                    >
+                  </div>
                 </div>
               </div>
             </div>
@@ -155,9 +157,6 @@
               data-bs-pause="false"
             >
               <h2 class="pb-3 pt-1">Upcoming Movies</h2>
-              <!-- <div class="position-absolute spinner-border text-dark" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div> -->
               <div class="carousel-inner pb-4">
                 <div class="carousel-item active">
                   <div class="pe-auto col-md-3">

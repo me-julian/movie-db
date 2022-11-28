@@ -144,6 +144,8 @@ ul {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin: 0;
+    margin-block: 0;
 }
 
 #current-review .card-text.clamp {
@@ -152,7 +154,7 @@ ul {
 
 .show-clamp {
     -webkit-line-clamp: unset !important;
-    overflow: auto !important;
+    overflow: hidden !important;
 }
 
 #toggle-review {

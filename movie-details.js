@@ -259,6 +259,11 @@ function updateReviewElement(review) {
 
     let creationDate = new Date(review.created_at)
     $(card).find('.card-subtitle').first().text(creationDate.toLocaleString())
+
+    showToggleIfClamped(
+        $('#current-review .clamp'),
+        $('#current-review .clamp-toggle')
+    )
 }
 
 function getReviewAvatar(review) {
@@ -434,11 +439,6 @@ function changeReviewPage(li) {
 
     checkPrevBtnStatus()
     checkNextBtnStatus()
-
-    showToggleIfClamped(
-        $('#current-review .clamp'),
-        $('#current-review .clamp-toggle')
-    )
 }
 
 function checkNextBtnStatus(

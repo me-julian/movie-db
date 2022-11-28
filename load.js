@@ -423,9 +423,9 @@ function addReviewPageListeners(API) {
 
 function addReviewClampListener() {
     $('#current-review').on('click', '#toggle-review', toggleReviewClamp)
+    addClampToggleListeners()
 }
 function toggleReviewClamp() {
-    console.log('show')
     let reviewText = $('#current-review .card-text')
     if ($(reviewText).hasClass('show-clamp')) {
         $(reviewText).removeClass('show-clamp')
@@ -434,26 +434,34 @@ function toggleReviewClamp() {
         $(reviewText).addClass('show-clamp')
         $('#toggle-review').text('Show Less')
     }
-
-    addClampToggleListeners()
 }
 
 function addClampToggleListeners() {
-    $('#document').on('resize', checkReviewClamp)
+    window.addEventListener('resize', checkReviewClamp)
 }
 function checkReviewClamp() {
     let clamped = $('.clamp')
-    let toggle = $(clamped).next('.clamp-toggle')
-    showToggleIfClamped(clamped, toggle)
+    for (let clamp of clamped) {
+        let toggle = $(clamp).next('.clamp-toggle')
+        showToggleIfClamped(clamp, toggle)
+    }
 }
 
-function showToggleIfClamped(clamped, toggle) {
-    const noClamp = $(clamped)[0].scrollHeight === $(clamped)[0].clientHeight
+function showToggleIfClamped(clamp, toggle) {
+    // 3 * line height + margin bottom 1rem from at least one <p>
+    const noClamp = $(clamp)[0].scrollHeight <= 72 + 16
+
     if (noClamp) {
-        $(toggle).addClass('hidden')
-        $(clamped).addClass('show-clamp')
+        if ($(clamp).not('.show-clamp')) {
+            $(toggle).addClass('hidden')
+        }
     } else {
-        $(toggle).removeClass('hidden')
+        if ($(clamp).hasClass('show-clamp')) {
+            $(toggle).removeClass('hidden')
+        } else {
+            $(toggle).removeClass('hidden')
+            $(clamp).removeClass('show-clamp')
+        }
     }
 }
 

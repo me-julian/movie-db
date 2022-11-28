@@ -430,6 +430,11 @@ function addClampToggleListeners() {
         '#toggle-movie-credits',
         toggleMovieCreditsClamp
     )
+    $('#actor-details').on(
+        'click',
+        '#toggle-actor-credits',
+        toggleActorCreditsClamp
+    )
 }
 function updateClampedElements() {
     let lineClamps = $('.line-clamp')
@@ -463,6 +468,16 @@ function toggleMovieCreditsClamp() {
     } else {
         $(credits).addClass('show-clamp')
         $('#toggle-movie-credits').text('Show Less')
+    }
+}
+function toggleActorCreditsClamp() {
+    let credits = $('#actor-credits')
+    if ($(credits).hasClass('show-clamp')) {
+        $(credits).removeClass('show-clamp')
+        $('#toggle-actor-credits').text('Show More')
+    } else {
+        $(credits).addClass('show-clamp')
+        $('#toggle-actor-credits').text('Show Less')
     }
 }
 

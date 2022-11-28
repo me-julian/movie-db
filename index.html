@@ -86,7 +86,7 @@
                     class="row row-cols-1 row-cols-lg-2 box-clamp"
                     data-clamp-height="350"
                   ></ul>
-                  <a class="clamp-toggle" id="toggle-movie-credits"
+                  <a id="toggle-movie-credits" class="clamp-toggle"
                     >Show More</a
                   >
                 </div>
@@ -114,7 +114,7 @@
             </div>
           </div>
           <div id="actor-details" class="container hidden">
-            <div class="d-flex mt-4">
+            <div class="d-flex mt-4 mb-2 border-bottom">
               <div class="col-2">
                 <img id="portrait" class="rounded" src="" />
                 <div>
@@ -128,9 +128,16 @@
                 <h2 id="name"></h2>
                 <p id="bio" class="my-2"></p>
                 <p id="bio-src"></p>
-                <div class="mt-2">
+                <div class="my-2">
                   <h5>Credits</h5>
-                  <ul id="actor-credits" class="row row-cols-2"></ul>
+                  <ul
+                    id="actor-credits"
+                    class="row row-cols-2 box-clamp"
+                    data-clamp-height="300"
+                  ></ul>
+                  <a id="toggle-actor-credits" class="clamp-toggle"
+                    >Show More</a
+                  >
                 </div>
               </div>
             </div>

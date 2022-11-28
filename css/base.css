@@ -155,6 +155,12 @@ ul {
     -webkit-mask-image: linear-gradient(to top, transparent 10%, black 50%);
     mask-image: linear-gradient(to top, transparent 10%, black 50%);
 }
+#actor-credits.box-clamp {
+    overflow: hidden;
+    max-height: 300px;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+    mask-image: linear-gradient(to top, transparent 0%, black 30%);
+}
 
 .show-clamp {
     -webkit-line-clamp: unset !important;

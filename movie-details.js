@@ -1,18 +1,24 @@
 'use strict'
 
 function viewMovieDetails(API, target) {
-    let collapseEl = document.querySelector('#info-collapse')
+    const collapseEl = document.querySelector('#info-collapse')
+    const loadFunct = () => {
+        loadMovie(API, collapseEl, target)
+    }
     if ($(collapseEl).hasClass('show')) {
         $(collapseEl).collapse('hide')
+        $(collapseEl).one('hidden.bs.collapse', loadFunct)
+    } else {
+        loadFunct()
     }
+}
 
-    let movieId = $(target).attr('data-id')
+function loadMovie(API, collapseEl, movieEl) {
+    let movieId = $(movieEl).attr('data-id')
     const movieDetailsRequest = retrieveMovieDetails(API, movieId)
     movieDetailsRequest.done((data) => {
         const detailsLoaded = populateMovieDetails(data)
         detailsLoaded.done(() => {
-            // Need event listener/timeout to only do this after
-            // it's disappeared.
             $(collapseEl).collapse('show')
         })
     })
@@ -77,9 +83,12 @@ function populateMovieDetails(movie) {
 
     if (movie.status === 'Released') {
         $('#release-date').text(movie.release_date.slice(0, 4))
-        $('#rating').text(movie.vote_average.toFixed(1))
     } else {
         $('#release-date').text(`Coming ${movie.release_date.slice(0, 4)}`)
+    }
+    if (movie.vote_count > 0) {
+        $('#rating').text(movie.vote_average.toFixed(1))
+    } else {
         $('#rating-wrapper').addClass('hidden')
     }
     $('#overview').text(movie.overview)

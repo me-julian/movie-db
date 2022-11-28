@@ -178,11 +178,11 @@ ul {
     mask-image: none !important;
 }
 
-#toggle-review {
+.clamp-toggle {
     cursor: pointer;
     color: #296eb4;
 }
-#toggle-review:hover {
+.clamp-toggle:hover {
     color: #1f5891;
 }
 
@@ -234,7 +234,7 @@ footer h5 {
     #movies-carousel .carousel-item > div {
         display: none;
     }
-    #movies-carousel .carousel-item > div:first-child {
+    c #movies-carousel .carousel-item > div:first-child {
         display: block;
     }
 

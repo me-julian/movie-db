@@ -202,8 +202,6 @@ function removeDuplicateCast(actors) {
     for (let movie in actors) {
         selectedActors[movie] = []
         for (let actor of actors[movie]) {
-            // ISSUE: Once loaded page and there were 10 actor carousel
-            // items from one movie. Reloaded and it was normal again.
             if (selectedActors[movie].length >= 3) {
                 break
             } else {
@@ -533,6 +531,8 @@ function resetInfoDetails() {
     $('.clamp-toggle').text('Show More')
 }
 
+// Button to open stable Avengers: End Game movie details
+// page which can demonstrate review pagination.
 $('#avengers-test').on('click', () => {
     $.get({
         url: `https://api.themoviedb.org/3/movie/299534?api_key=2f53ed057a5040f94bf52c398ed4a659&language=en-US&append_to_response=credits,reviews`,
